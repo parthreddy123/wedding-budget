@@ -534,13 +534,18 @@
 // ─── Supabase ───
 const SUPABASE_URL = 'https://ddlfzwvnbawsnbeaultu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_FVlxkuMjE7Mr98DVu9ktCg_o62Ml0Lt';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
+try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) {
+    console.warn('Supabase init failed, using local mode:', e);
+}
 
 // ─── State ───
 let currentVenue = 'estate';
 let budgetItems = [];
 let decisions = [];
-const PASSWORD_HASH = '7065'; // simple pin — we'll check against this
+let useLocal = !sb;
 
 // ─── Login ───
 document.getElementById('passwordInput').addEventListener('keydown', e => {
@@ -549,7 +554,7 @@ document.getElementById('passwordInput').addEventListener('keydown', e => {
 
 function tryLogin() {
     const pw = document.getElementById('passwordInput').value;
-    if (pw === localStorage.getItem('pe_budget_pw') || checkPassword(pw)) {
+    if (checkPassword(pw)) {
         localStorage.setItem('pe_budget_pw', pw);
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('app').style.display = 'block';
@@ -560,7 +565,6 @@ function tryLogin() {
 }
 
 function checkPassword(pw) {
-    // Simple check — the password is "pe2026"
     return pw === 'pe2026';
 }
 
@@ -574,23 +578,29 @@ if (localStorage.getItem('pe_budget_pw') && checkPassword(localStorage.getItem('
 // ─── Init ───
 async function init() {
     await loadData();
-    subscribeToChanges();
+    if (sb) subscribeToChanges();
 }
 
 async function loadData() {
     // Load budget items
-    const { data: items, error: itemsErr } = await supabase
+    if (!sb) {
+        budgetItems = getSeedData();
+        decisions = getSeedDecisions();
+        renderBudget(); renderDecisions(); updateSummary();
+        showToast('Local mode — Supabase unavailable');
+        return;
+    }
+
+    const { data: items, error: itemsErr } = await sb
         .from('wedding_budget')
         .select('*')
         .order('sort_order', { ascending: true });
 
     if (itemsErr) {
         console.error('Load error:', itemsErr);
-        // Fall back to seed data if table doesn't exist
         budgetItems = getSeedData();
-        showToast('Using local data — Supabase table not set up yet');
+        showToast('Using local data — check Supabase setup');
     } else if (!items || items.length === 0) {
-        // Seed the database
         budgetItems = getSeedData();
         await seedDatabase();
     } else {
@@ -598,7 +608,7 @@ async function loadData() {
     }
 
     // Load decisions
-    const { data: decs, error: decsErr } = await supabase
+    const { data: decs, error: decsErr } = await sb
         .from('wedding_decisions')
         .select('*')
         .order('created_at', { ascending: true });
@@ -664,28 +674,28 @@ function getSeedDecisions() {
 
 async function seedDatabase() {
     const rows = budgetItems.map(({ id, ...rest }) => rest);
-    const { error } = await supabase.from('wedding_budget').insert(rows);
+    const { error } = await sb.from('wedding_budget').insert(rows);
     if (error) console.error('Seed error:', error);
     else {
-        const { data } = await supabase.from('wedding_budget').select('*').order('sort_order');
+        const { data } = await sb.from('wedding_budget').select('*').order('sort_order');
         if (data) budgetItems = data;
     }
 }
 
 async function seedDecisions() {
-    const { error } = await supabase.from('wedding_decisions').insert(
+    const { error } = await sb.from('wedding_decisions').insert(
         decisions.map(d => ({ text: d.text, resolved: d.resolved }))
     );
     if (error) console.error('Seed decisions error:', error);
     else {
-        const { data } = await supabase.from('wedding_decisions').select('*').order('created_at');
+        const { data } = await sb.from('wedding_decisions').select('*').order('created_at');
         if (data) decisions = data;
     }
 }
 
 // ─── Real-time ───
 function subscribeToChanges() {
-    supabase.channel('budget-changes')
+    sb.channel('budget-changes')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'wedding_budget' }, payload => {
             handleBudgetChange(payload);
         })
@@ -846,16 +856,20 @@ async function updateAmount(id, field, value) {
     renderBudget();
     updateSummary();
 
-    const { error } = await supabase.from('wedding_budget').update({ [field]: num }).eq('id', id);
-    if (error) showToast('Save failed — check connection');
+    if (sb) {
+        const { error } = await sb.from('wedding_budget').update({ [field]: num }).eq('id', id);
+        if (error) showToast('Save failed — check connection');
+    }
 }
 
 async function updateField(id, field, value) {
     const item = budgetItems.find(i => i.id === id);
     if (item) item[field] = value;
 
-    const { error } = await supabase.from('wedding_budget').update({ [field]: value }).eq('id', id);
-    if (error) showToast('Save failed');
+    if (sb) {
+        const { error } = await sb.from('wedding_budget').update({ [field]: value }).eq('id', id);
+        if (error) showToast('Save failed');
+    }
 }
 
 async function addRow() {
@@ -870,12 +884,14 @@ async function addRow() {
         sort_order: items.length
     };
 
-    const { data, error } = await supabase.from('wedding_budget').insert(newItem).select();
-    if (error) {
-        showToast('Could not add row');
-        return;
+    if (sb) {
+        const { data, error } = await sb.from('wedding_budget').insert(newItem).select();
+        if (error) { showToast('Could not add row'); return; }
+        if (data) budgetItems.push(data[0]);
+    } else {
+        newItem.id = Date.now();
+        budgetItems.push(newItem);
     }
-    if (data) budgetItems.push(data[0]);
     renderBudget();
     updateSummary();
 }
@@ -885,18 +901,19 @@ async function deleteRow(id) {
     budgetItems = budgetItems.filter(i => i.id !== id);
     renderBudget();
     updateSummary();
-
-    await supabase.from('wedding_budget').delete().eq('id', id);
+    if (sb) await sb.from('wedding_budget').delete().eq('id', id);
 }
 
 async function addDecision() {
     const newDec = { text: 'New decision...', resolved: false };
-    const { data, error } = await supabase.from('wedding_decisions').insert(newDec).select();
-    if (error) {
-        showToast('Could not add decision');
-        return;
+    if (sb) {
+        const { data, error } = await sb.from('wedding_decisions').insert(newDec).select();
+        if (error) { showToast('Could not add decision'); return; }
+        if (data) decisions.push(data[0]);
+    } else {
+        newDec.id = crypto.randomUUID();
+        decisions.push(newDec);
     }
-    if (data) decisions.push(data[0]);
     renderDecisions();
 }
 
@@ -905,19 +922,19 @@ async function toggleDecision(id) {
     if (!dec) return;
     dec.resolved = !dec.resolved;
     renderDecisions();
-    await supabase.from('wedding_decisions').update({ resolved: dec.resolved }).eq('id', id);
+    if (sb) await sb.from('wedding_decisions').update({ resolved: dec.resolved }).eq('id', id);
 }
 
 async function updateDecisionText(id, text) {
     const dec = decisions.find(d => d.id === id);
     if (dec) dec.text = text;
-    await supabase.from('wedding_decisions').update({ text }).eq('id', id);
+    if (sb) await sb.from('wedding_decisions').update({ text }).eq('id', id);
 }
 
 async function deleteDecision(id) {
     decisions = decisions.filter(d => d.id !== id);
     renderDecisions();
-    await supabase.from('wedding_decisions').delete().eq('id', id);
+    if (sb) await sb.from('wedding_decisions').delete().eq('id', id);
 }
 
 // ─── Helpers ───

@@ -7,9 +7,7 @@
     <style>
         :root {
             --rose: #e8c4c4;
-            --rose-dark: #c9a0a0;
             --sage: #a8b5a2;
-            --sage-dark: #8a9b83;
             --cream: #faf6f1;
             --gold: #c9a94e;
             --gold-light: #e8d99a;
@@ -20,9 +18,7 @@
             --red: #c0392b;
             --green: #27ae60;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
             background: var(--cream);
@@ -44,321 +40,127 @@
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             opacity: 0.5;
         }
-        .header h1 {
-            font-size: 2.2rem;
-            font-weight: 400;
-            letter-spacing: 0.15em;
-            color: var(--white);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-            position: relative;
-        }
-        .header .subtitle {
-            font-size: 1rem;
-            color: var(--white);
-            opacity: 0.9;
-            margin-top: 0.3rem;
-            font-style: italic;
-            position: relative;
-        }
-        .sync-status {
-            position: absolute;
-            top: 0.8rem;
-            right: 1rem;
-            font-size: 0.75rem;
-            font-family: -apple-system, sans-serif;
-            color: var(--white);
-            opacity: 0.8;
-        }
-        .sync-dot {
-            display: inline-block;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            margin-right: 4px;
-            vertical-align: middle;
-        }
+        .header h1 { font-size: 2.2rem; font-weight: 400; letter-spacing: 0.15em; color: var(--white); text-shadow: 1px 1px 3px rgba(0,0,0,0.15); position: relative; }
+        .header .subtitle { font-size: 1rem; color: var(--white); opacity: 0.9; margin-top: 0.3rem; font-style: italic; position: relative; }
+        .sync-status { position: absolute; top: 0.8rem; right: 1rem; font-size: 0.75rem; font-family: -apple-system, sans-serif; color: var(--white); opacity: 0.8; }
+        .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 4px; vertical-align: middle; }
         .sync-dot.offline { background: var(--red); }
 
         .summary-bar {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            padding: 1.2rem 1rem;
-            background: var(--white);
-            border-bottom: 1px solid var(--mid-gray);
+            display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+            padding: 1.2rem 1rem; background: var(--white); border-bottom: 1px solid var(--mid-gray);
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
         .summary-item { text-align: center; }
-        .summary-item .label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #888;
-        }
-        .summary-item .value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--charcoal);
-        }
+        .summary-item .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+        .summary-item .value { font-size: 1.4rem; font-weight: 700; color: var(--charcoal); }
 
+        .budget-section { max-width: 900px; margin: 0 auto; padding: 0 1rem 1.5rem; }
+        .section-title {
+            text-align: center; font-size: 1.4rem; font-weight: 400; letter-spacing: 0.1em;
+            margin: 1.5rem 0 1rem; color: var(--charcoal);
+        }
+        .section-title .venue-total { font-size: 0.9rem; color: #888; display: block; margin-top: 0.2rem; font-family: -apple-system, sans-serif; }
 
-        .budget-section {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 1rem 2rem;
-        }
-        .venue-title {
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            margin: 1.5rem 0 1rem;
-            color: var(--charcoal);
-        }
-        .venue-title .venue-total {
-            font-size: 0.9rem;
-            color: #888;
-            display: block;
-            margin-top: 0.2rem;
-            font-family: -apple-system, sans-serif;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-        thead th {
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 0.75rem 0.6rem;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 600;
-            text-align: right;
-        }
+        table { width: 100%; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        thead th { background: var(--charcoal); color: var(--white); padding: 0.75rem 0.6rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; text-align: right; }
         thead th:first-child { text-align: left; }
         thead th:last-child { text-align: left; }
-
-        tbody td {
-            padding: 0.6rem;
-            border-bottom: 1px solid var(--light-gray);
-            font-size: 0.9rem;
-            text-align: right;
-            vertical-align: middle;
-        }
-        tbody td:first-child {
-            text-align: left;
-            font-weight: 500;
-            color: var(--charcoal);
-        }
+        tbody td { padding: 0.6rem; border-bottom: 1px solid var(--light-gray); font-size: 0.9rem; text-align: right; vertical-align: middle; }
+        tbody td:first-child { text-align: left; font-weight: 500; color: var(--charcoal); }
         tbody td:last-child { text-align: left; }
         tbody tr:hover { background: #fdfcfa; }
-        tbody tr.total-row {
-            background: var(--light-gray);
-            font-weight: 700;
-        }
+        tbody tr.total-row { background: var(--light-gray); font-weight: 700; }
         tbody tr.total-row td { border-bottom: none; }
 
-        .editable {
-            cursor: pointer;
-            padding: 0.3rem 0.5rem;
-            border-radius: 4px;
-            min-width: 60px;
-            display: inline-block;
-            transition: background 0.15s;
-        }
+        .editable { cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 4px; min-width: 60px; display: inline-block; transition: background 0.15s; }
         .editable:hover { background: var(--gold-light); }
-        .editable:focus {
-            outline: 2px solid var(--gold);
-            background: var(--white);
-        }
+        .editable:focus { outline: 2px solid var(--gold); background: var(--white); }
 
-        .notes-input {
-            width: 100%;
-            border: none;
-            background: transparent;
-            font-size: 0.8rem;
-            color: #666;
-            font-family: inherit;
-            padding: 0.2rem;
-            border-radius: 4px;
-        }
-        .notes-input:focus {
-            outline: 2px solid var(--gold);
-            background: var(--white);
-        }
+        .notes-input { width: 100%; border: none; background: transparent; font-size: 0.8rem; color: #666; font-family: inherit; padding: 0.2rem; border-radius: 4px; }
+        .notes-input:focus { outline: 2px solid var(--gold); background: var(--white); }
 
-        .add-row-btn {
-            display: block;
-            margin: 0.8rem auto;
-            padding: 0.5rem 1.5rem;
-            border: 2px dashed var(--mid-gray);
-            border-radius: 8px;
-            background: transparent;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #999;
-            transition: all 0.2s;
-            font-family: -apple-system, sans-serif;
+        .add-row-btn, .add-vendor-btn {
+            display: block; margin: 0.8rem auto; padding: 0.5rem 1.5rem;
+            border: 2px dashed var(--mid-gray); border-radius: 8px; background: transparent;
+            cursor: pointer; font-size: 0.85rem; color: #999; transition: all 0.2s; font-family: -apple-system, sans-serif;
         }
-        .add-row-btn:hover { border-color: var(--gold); color: var(--gold); }
+        .add-row-btn:hover, .add-vendor-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        .delete-btn {
-            opacity: 0;
-            cursor: pointer;
-            color: var(--red);
-            font-size: 0.8rem;
-            padding: 0.2rem 0.4rem;
-            border: none;
-            background: none;
-            transition: opacity 0.15s;
-        }
+        .delete-btn { opacity: 0; cursor: pointer; color: var(--red); font-size: 0.8rem; padding: 0.2rem 0.4rem; border: none; background: none; transition: opacity 0.15s; }
         tbody tr:hover .delete-btn { opacity: 0.5; }
         .delete-btn:hover { opacity: 1 !important; }
 
-        .decisions-panel {
-            max-width: 900px;
-            margin: 0 auto 2rem;
-            padding: 0 1rem;
+        /* ─── Category Tabs ─── */
+        .vendor-section { max-width: 900px; margin: 0 auto; padding: 0 1rem 2rem; }
+        .vendor-section h2 { text-align: center; font-size: 1.2rem; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 1rem; }
+        .cat-tabs {
+            display: flex; justify-content: center; gap: 0.4rem; flex-wrap: wrap;
+            padding: 0 0 1rem; font-family: -apple-system, sans-serif;
         }
-        .decisions-panel h3 {
-            font-weight: 400;
-            letter-spacing: 0.08em;
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
+        .cat-tab {
+            padding: 0.4rem 0.9rem; border: 1.5px solid var(--mid-gray); border-radius: 20px;
+            background: var(--white); cursor: pointer; font-size: 0.8rem; font-weight: 500;
+            transition: all 0.2s; color: var(--charcoal);
         }
-        .decision-card {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.6rem;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: flex-start;
-            gap: 0.8rem;
-            font-family: -apple-system, sans-serif;
-        }
-        .decision-check {
-            width: 20px; height: 20px;
-            border: 2px solid var(--mid-gray);
-            border-radius: 50%;
-            cursor: pointer;
-            flex-shrink: 0;
-            margin-top: 2px;
-            transition: all 0.2s;
-        }
-        .decision-check.resolved { background: var(--sage); border-color: var(--sage); }
-        .decision-text {
-            flex: 1;
-            font-size: 0.9rem;
-            border: none;
-            background: transparent;
-            width: 100%;
-            font-family: inherit;
-            resize: none;
-            color: var(--charcoal);
-        }
-        .decision-text:focus { outline: none; }
-        .decision-delete {
-            color: var(--red);
-            cursor: pointer;
-            opacity: 0.4;
-            border: none;
-            background: none;
-            font-size: 0.9rem;
-        }
-        .decision-delete:hover { opacity: 1; }
+        .cat-tab.active { background: var(--charcoal); color: var(--white); border-color: var(--charcoal); }
+        .cat-tab:hover:not(.active) { border-color: var(--gold); }
 
-        .add-decision-btn {
-            display: block;
-            margin: 0.5rem auto;
-            padding: 0.4rem 1.2rem;
-            border: 2px dashed var(--mid-gray);
-            border-radius: 8px;
-            background: transparent;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: #999;
-            font-family: -apple-system, sans-serif;
+        .vendor-card {
+            background: var(--white); border-radius: 10px; padding: 1rem; margin-bottom: 0.6rem;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05); font-family: -apple-system, sans-serif;
+            position: relative;
         }
+        .vendor-card .vendor-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.5rem; }
+        .vendor-card .vendor-row:last-child { margin-bottom: 0; }
+        .vendor-field { flex: 1; min-width: 120px; }
+        .vendor-field label { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; margin-bottom: 0.15rem; }
+        .vendor-field input, .vendor-field textarea, .vendor-field select {
+            width: 100%; border: 1px solid var(--light-gray); border-radius: 6px; padding: 0.4rem 0.5rem;
+            font-size: 0.85rem; font-family: -apple-system, sans-serif; background: var(--cream);
+        }
+        .vendor-field input:focus, .vendor-field textarea:focus, .vendor-field select:focus { outline: 2px solid var(--gold); border-color: transparent; }
+        .vendor-field textarea { resize: vertical; min-height: 40px; }
+        .vendor-chosen { border-left: 3px solid var(--sage); }
+        .vendor-delete {
+            position: absolute; top: 0.5rem; right: 0.5rem; color: var(--red); cursor: pointer;
+            opacity: 0.3; border: none; background: none; font-size: 0.85rem;
+        }
+        .vendor-delete:hover { opacity: 1; }
+        .chosen-badge {
+            display: inline-block; background: var(--sage); color: var(--white); font-size: 0.65rem;
+            padding: 0.15rem 0.5rem; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+
+        /* Decisions */
+        .decisions-panel { max-width: 900px; margin: 0 auto 2rem; padding: 0 1rem; }
+        .decisions-panel h3 { font-weight: 400; letter-spacing: 0.08em; margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .decision-card { background: var(--white); border-radius: 10px; padding: 1rem; margin-bottom: 0.6rem; box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; align-items: flex-start; gap: 0.8rem; font-family: -apple-system, sans-serif; }
+        .decision-check { width: 20px; height: 20px; border: 2px solid var(--mid-gray); border-radius: 50%; cursor: pointer; flex-shrink: 0; margin-top: 2px; transition: all 0.2s; }
+        .decision-check.resolved { background: var(--sage); border-color: var(--sage); }
+        .decision-text { flex: 1; font-size: 0.9rem; border: none; background: transparent; width: 100%; font-family: inherit; resize: none; color: var(--charcoal); }
+        .decision-text:focus { outline: none; }
+        .decision-delete { color: var(--red); cursor: pointer; opacity: 0.4; border: none; background: none; font-size: 0.9rem; }
+        .decision-delete:hover { opacity: 1; }
+        .add-decision-btn { display: block; margin: 0.5rem auto; padding: 0.4rem 1.2rem; border: 2px dashed var(--mid-gray); border-radius: 8px; background: transparent; cursor: pointer; font-size: 0.8rem; color: #999; font-family: -apple-system, sans-serif; }
         .add-decision-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        .footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            font-size: 0.75rem;
-            color: #aaa;
-            font-family: -apple-system, sans-serif;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            background: var(--charcoal);
-            color: var(--white);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-family: -apple-system, sans-serif;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s;
-            z-index: 100;
-        }
+        .footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: #aaa; font-family: -apple-system, sans-serif; }
+        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--charcoal); color: var(--white); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-family: -apple-system, sans-serif; opacity: 0; transform: translateY(10px); transition: all 0.3s; z-index: 100; }
         .toast.show { opacity: 1; transform: translateY(0); }
 
-        .login-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
+        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
         .login-overlay.hidden { display: none; }
-        .login-box {
-            background: var(--white);
-            padding: 2.5rem;
-            border-radius: 16px;
-            text-align: center;
-            max-width: 380px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
+        .login-box { background: var(--white); padding: 2.5rem; border-radius: 16px; text-align: center; max-width: 380px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
         .login-box h2 { font-weight: 400; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
         .login-box p { color: #888; font-size: 0.9rem; margin-bottom: 1.5rem; }
-        .login-box input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border: 1px solid var(--mid-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            font-family: -apple-system, sans-serif;
-        }
+        .login-box input { width: 100%; padding: 0.7rem 1rem; border: 1px solid var(--mid-gray); border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; font-family: -apple-system, sans-serif; }
         .login-box input:focus { outline: 2px solid var(--gold); border-color: transparent; }
-        .login-box button {
-            width: 100%;
-            padding: 0.7rem;
-            background: var(--charcoal);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-family: -apple-system, sans-serif;
-        }
+        .login-box button { width: 100%; padding: 0.7rem; background: var(--charcoal); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-family: -apple-system, sans-serif; }
         .login-box button:hover { opacity: 0.9; }
         .login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+        .divider { max-width: 900px; margin: 0 auto; border: none; border-top: 1px solid var(--mid-gray); }
 
         @media (max-width: 600px) {
             .header h1 { font-size: 1.6rem; }
@@ -366,6 +168,7 @@
             .summary-item .value { font-size: 1.1rem; }
             table { font-size: 0.8rem; }
             thead th, tbody td { padding: 0.5rem 0.4rem; }
+            .cat-tab { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
         }
     </style>
 </head>
@@ -388,49 +191,37 @@
             <span id="syncText">Connected</span>
         </div>
         <h1>PARTH & EMILY</h1>
-        <div class="subtitle">Wedding Budget</div>
+        <div class="subtitle">Wedding Budget &mdash; Estate</div>
     </header>
 
     <div class="summary-bar">
-        <div class="summary-item">
-            <div class="label">Total Budget</div>
-            <div class="value" id="summaryTotal">-</div>
-        </div>
-        <div class="summary-item">
-            <div class="label">Parth</div>
-            <div class="value" id="summaryParth">-</div>
-        </div>
-        <div class="summary-item">
-            <div class="label">Emily</div>
-            <div class="value" id="summaryEmily">-</div>
-        </div>
-        <div class="summary-item">
-            <div class="label">Other</div>
-            <div class="value" id="summaryOther">-</div>
-        </div>
+        <div class="summary-item"><div class="label">Total Budget</div><div class="value" id="summaryTotal">-</div></div>
+        <div class="summary-item"><div class="label">Parth</div><div class="value" id="summaryParth">-</div></div>
+        <div class="summary-item"><div class="label">Emily</div><div class="value" id="summaryEmily">-</div></div>
+        <div class="summary-item"><div class="label">Other</div><div class="value" id="summaryOther">-</div></div>
     </div>
 
     <div class="budget-section">
-        <div class="venue-title">
-            Estate
-            <span class="venue-total" id="venueTotal"></span>
-        </div>
+        <div class="section-title">Budget Overview <span class="venue-total" id="venueTotal"></span></div>
         <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Parth</th>
-                    <th>Emily</th>
-                    <th>Other</th>
-                    <th>Total</th>
-                    <th>Notes / Decisions</th>
-                    <th></th>
-                </tr>
-            </thead>
+            <thead><tr>
+                <th>Item</th><th>Parth</th><th>Emily</th><th>Other</th><th>Total</th><th>Notes</th><th></th>
+            </tr></thead>
             <tbody id="budgetBody"></tbody>
         </table>
         <button class="add-row-btn" onclick="addRow()">+ Add Item</button>
     </div>
+
+    <hr class="divider">
+
+    <div class="vendor-section">
+        <h2>Vendor Research</h2>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div id="vendorList"></div>
+        <button class="add-vendor-btn" onclick="addVendor()">+ Add Vendor</button>
+    </div>
+
+    <hr class="divider">
 
     <div class="decisions-panel">
         <h3>Decisions To Make</h3>
@@ -438,113 +229,96 @@
         <button class="add-decision-btn" onclick="addDecision()">+ Add Decision</button>
     </div>
 
-    <div class="footer">
-        Changes sync between devices &middot; P&E 2026
-    </div>
+    <div class="footer">Changes sync between devices &middot; P&E 2026</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Supabase REST API (no SDK needed) ───
+// ─── Supabase REST ───
 const API = 'https://ddlfzwvnbawsnbeaultu.supabase.co/rest/v1';
 const KEY = 'sb_publishable_FVlxkuMjE7Mr98DVu9ktCg_o62Ml0Lt';
-const HEADERS = {
-    'apikey': KEY,
-    'Authorization': 'Bearer ' + KEY,
-    'Content-Type': 'application/json',
-    'Prefer': 'return=representation'
-};
+const HEADERS = { 'apikey': KEY, 'Authorization': 'Bearer '+KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 
-async function dbSelect(table, query = '') {
-    const res = await fetch(`${API}/${table}?${query}`, { headers: HEADERS });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return res.json();
+async function dbSelect(table, query='') {
+    const r = await fetch(`${API}/${table}?${query}`, {headers:HEADERS});
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
 }
 async function dbInsert(table, rows) {
-    const res = await fetch(`${API}/${table}`, {
-        method: 'POST', headers: HEADERS, body: JSON.stringify(rows)
-    });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return res.json();
+    const r = await fetch(`${API}/${table}`, {method:'POST', headers:HEADERS, body:JSON.stringify(rows)});
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
 }
-async function dbUpdate(table, id, data, idCol = 'id') {
-    const res = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {
-        method: 'PATCH', headers: HEADERS, body: JSON.stringify(data)
-    });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return res.json();
+async function dbUpdate(table, id, data, idCol='id') {
+    const r = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {method:'PATCH', headers:HEADERS, body:JSON.stringify(data)});
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
 }
-async function dbDelete(table, id, idCol = 'id') {
-    const res = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {
-        method: 'DELETE', headers: HEADERS
-    });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+async function dbDelete(table, id, idCol='id') {
+    const r = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {method:'DELETE', headers:HEADERS});
+    if (!r.ok) throw new Error(r.status);
 }
 
 // ─── State ───
 let budgetItems = [];
 let decisions = [];
+let vendors = [];
+let activeTab = 'Dinner + Travel';
 let pollTimer = null;
 
+const CATEGORIES = [
+    'Dinner + Travel', 'Photographer', 'Makeup', 'Hairstylist',
+    'Dancing', 'Live Band', 'Additional Party'
+];
+
 // ─── Login ───
-document.getElementById('passwordInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') tryLogin();
-});
-
+document.getElementById('passwordInput').addEventListener('keydown', e => { if (e.key==='Enter') tryLogin(); });
 function checkPassword(pw) { return pw === 'pe2026'; }
-
 function tryLogin() {
     const pw = document.getElementById('passwordInput').value;
-    if (checkPassword(pw)) {
-        localStorage.setItem('pe_budget_pw', pw);
-        showApp();
-    } else {
-        document.getElementById('loginError').style.display = 'block';
-    }
+    if (checkPassword(pw)) { localStorage.setItem('pe_budget_pw', pw); showApp(); }
+    else document.getElementById('loginError').style.display = 'block';
 }
-
 function showApp() {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
     init();
 }
-
-// Auto-login
-if (localStorage.getItem('pe_budget_pw') === 'pe2026') {
-    showApp();
-}
+if (localStorage.getItem('pe_budget_pw') === 'pe2026') showApp();
 
 // ─── Init ───
 async function init() {
     try {
         let items = await dbSelect('wedding_budget', 'venue=eq.estate&order=sort_order.asc');
-        if (items.length === 0) {
-            items = await seedBudget();
-        }
+        if (items.length === 0) items = await seedBudget();
         budgetItems = items;
 
         let decs = await dbSelect('wedding_decisions', 'order=created_at.asc');
-        if (decs.length === 0) {
-            decs = await seedDecisions();
-        }
+        if (decs.length === 0) decs = await seedDecisions();
         decisions = decs;
+
+        try {
+            vendors = await dbSelect('wedding_vendors', 'order=created_at.asc');
+        } catch(e) {
+            // table might not exist yet
+            vendors = [];
+        }
 
         document.getElementById('syncDot').classList.remove('offline');
         document.getElementById('syncText').textContent = 'Synced';
 
+        renderCatTabs();
         renderBudget();
+        renderVendors();
         renderDecisions();
         updateSummary();
-
-        // Poll for changes every 5 seconds
         startPolling();
-
     } catch (err) {
         console.error('Init failed:', err);
         document.getElementById('syncDot').classList.add('offline');
         document.getElementById('syncText').textContent = 'Offline';
-        showToast('Connection error — check console');
+        showToast('Connection error \u2014 check console');
     }
 }
 
@@ -552,92 +326,117 @@ function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(async () => {
         try {
-            const items = await dbSelect('wedding_budget', 'venue=eq.estate&order=sort_order.asc');
-            const decs = await dbSelect('wedding_decisions', 'order=created_at.asc');
-            budgetItems = items;
-            decisions = decs;
-            renderBudget();
-            renderDecisions();
-            updateSummary();
-        } catch (e) {
-            // silent — will retry next interval
-        }
+            budgetItems = await dbSelect('wedding_budget', 'venue=eq.estate&order=sort_order.asc');
+            decisions = await dbSelect('wedding_decisions', 'order=created_at.asc');
+            try { vendors = await dbSelect('wedding_vendors', 'order=created_at.asc'); } catch(e) {}
+            renderBudget(); renderVendors(); renderDecisions(); updateSummary();
+        } catch(e) {}
     }, 5000);
 }
 
-// ─── Seed Data ───
+// ─── Seed ───
 function makeSeedRows() {
     return [
-        { venue: 'estate', category: 'Main reception', parth_amount: 0, emily_amount: 0, other_amount: 90000, notes: '', sort_order: 0 },
-        { venue: 'estate', category: 'Indian wedding', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 1 },
-        { venue: 'estate', category: 'Chinese wedding', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 2 },
-        { venue: 'estate', category: 'Dinner + Travel', parth_amount: 0, emily_amount: 0, other_amount: 4000, notes: '', sort_order: 3 },
-        { venue: 'estate', category: 'Photographer/Videographer', parth_amount: 0, emily_amount: 0, other_amount: 3000, notes: '', sort_order: 4 },
-        { venue: 'estate', category: 'Clothing', parth_amount: 4000, emily_amount: 1500, other_amount: 0, notes: '', sort_order: 5 },
-        { venue: 'estate', category: 'Makeup, Hairstylist', parth_amount: 0, emily_amount: 1500, other_amount: 0, notes: '', sort_order: 6 },
-        { venue: 'estate', category: 'Planner', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 7 },
+        { venue:'estate', category:'Main reception', parth_amount:0, emily_amount:0, other_amount:90000, notes:'', sort_order:0 },
+        { venue:'estate', category:'Dinner + Travel', parth_amount:0, emily_amount:0, other_amount:4000, notes:'', sort_order:1 },
+        { venue:'estate', category:'Photographer', parth_amount:0, emily_amount:0, other_amount:3000, notes:'', sort_order:2 },
+        { venue:'estate', category:'Makeup', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:3 },
+        { venue:'estate', category:'Hairstylist', parth_amount:0, emily_amount:1500, other_amount:0, notes:'', sort_order:4 },
+        { venue:'estate', category:'Dancing', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:5 },
+        { venue:'estate', category:'Live Band', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:6 },
+        { venue:'estate', category:'Additional Party', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:7 },
+        { venue:'estate', category:'Planner', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:8 },
     ];
 }
-
-async function seedBudget() {
-    return await dbInsert('wedding_budget', makeSeedRows());
-}
-
+async function seedBudget() { return await dbInsert('wedding_budget', makeSeedRows()); }
 async function seedDecisions() {
     return await dbInsert('wedding_decisions', [
         { text: 'Estate \u2014 theatre seating or not?', resolved: false },
-        { text: 'Indian ceremony \u2014 do this in May or not, or in India? If so, when?', resolved: false },
         { text: 'Can we move tea ceremony to reception same day on 9 May?', resolved: false },
     ]);
 }
 
-// ─── Render ───
+// ─── Render Budget ───
 function renderBudget() {
     const tbody = document.getElementById('budgetBody');
-    const items = budgetItems;
-    let tP = 0, tE = 0, tO = 0;
-
-    tbody.innerHTML = items.map(item => {
-        const p = Number(item.parth_amount) || 0;
-        const e = Number(item.emily_amount) || 0;
-        const o = Number(item.other_amount) || 0;
-        const t = p + e + o;
-        tP += p; tE += e; tO += o;
+    let tP=0, tE=0, tO=0;
+    tbody.innerHTML = budgetItems.map(item => {
+        const p=Number(item.parth_amount)||0, e=Number(item.emily_amount)||0, o=Number(item.other_amount)||0, t=p+e+o;
+        tP+=p; tE+=e; tO+=o;
         return `<tr>
-            <td><span class="editable" contenteditable="true"
-                onblur="updateField(${item.id},'category',this.textContent)">${esc(item.category)}</span></td>
-            <td><span class="editable" contenteditable="true"
-                onfocus="editStart(this)"
-                onblur="updateAmount(${item.id},'parth_amount',this.textContent)">${fmtNum(p)}</span></td>
-            <td><span class="editable" contenteditable="true"
-                onfocus="editStart(this)"
-                onblur="updateAmount(${item.id},'emily_amount',this.textContent)">${fmtNum(e)}</span></td>
-            <td><span class="editable" contenteditable="true"
-                onfocus="editStart(this)"
-                onblur="updateAmount(${item.id},'other_amount',this.textContent)">${fmtNum(o)}</span></td>
+            <td><span class="editable" contenteditable="true" onblur="updateField(${item.id},'category',this.textContent)">${esc(item.category)}</span></td>
+            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'parth_amount',this.textContent)">${fmtNum(p)}</span></td>
+            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'emily_amount',this.textContent)">${fmtNum(e)}</span></td>
+            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'other_amount',this.textContent)">${fmtNum(o)}</span></td>
             <td><strong>${fmtMYR(t)}</strong></td>
-            <td><input class="notes-input" value="${esc(item.notes||'')}"
-                onchange="updateField(${item.id},'notes',this.value)" placeholder="Add note..."></td>
+            <td><input class="notes-input" value="${esc(item.notes||'')}" onchange="updateField(${item.id},'notes',this.value)" placeholder="Add note..."></td>
             <td><button class="delete-btn" onclick="deleteRow(${item.id})">&#10005;</button></td>
         </tr>`;
     }).join('');
-
-    const gt = tP + tE + tO;
-    tbody.innerHTML += `<tr class="total-row">
-        <td>Total</td><td>${fmtMYR(tP)}</td><td>${fmtMYR(tE)}</td><td>${fmtMYR(tO)}</td>
-        <td><strong>${fmtMYR(gt)}</strong></td><td></td><td></td></tr>`;
+    const gt=tP+tE+tO;
+    tbody.innerHTML += `<tr class="total-row"><td>Total</td><td>${fmtMYR(tP)}</td><td>${fmtMYR(tE)}</td><td>${fmtMYR(tO)}</td><td><strong>${fmtMYR(gt)}</strong></td><td></td><td></td></tr>`;
     document.getElementById('venueTotal').textContent = fmtMYR(gt);
 }
 
+// ─── Render Category Tabs ───
+function renderCatTabs() {
+    document.getElementById('catTabs').innerHTML = CATEGORIES.map(c =>
+        `<button class="cat-tab ${c===activeTab?'active':''}" onclick="switchTab('${esc(c)}')">${c}</button>`
+    ).join('');
+}
+
+function switchTab(cat) {
+    activeTab = cat;
+    renderCatTabs();
+    renderVendors();
+}
+
+// ─── Render Vendors ───
+function renderVendors() {
+    const list = vendors.filter(v => v.category === activeTab);
+    document.getElementById('vendorList').innerHTML = list.length === 0
+        ? `<div style="text-align:center;padding:1.5rem;color:#aaa;font-family:-apple-system,sans-serif;font-size:0.9rem;">No vendors added for ${activeTab} yet</div>`
+        : list.map(v => `
+        <div class="vendor-card ${v.chosen ? 'vendor-chosen' : ''}">
+            <button class="vendor-delete" onclick="deleteVendor('${v.id}')">&#10005;</button>
+            <div class="vendor-row">
+                <div class="vendor-field" style="flex:2">
+                    <label>Vendor Name</label>
+                    <input value="${esc(v.name||'')}" onchange="updateVendor('${v.id}','name',this.value)" placeholder="e.g. Studio XYZ">
+                </div>
+                <div class="vendor-field">
+                    <label>Price (MYR)</label>
+                    <input type="number" value="${v.price||''}" onchange="updateVendor('${v.id}','price',this.value)" placeholder="0">
+                </div>
+                <div class="vendor-field">
+                    <label>Contact</label>
+                    <input value="${esc(v.contact||'')}" onchange="updateVendor('${v.id}','contact',this.value)" placeholder="Phone / IG">
+                </div>
+                <div class="vendor-field" style="flex:0 0 auto;">
+                    <label>Chosen?</label>
+                    <select onchange="updateVendor('${v.id}','chosen',this.value==='yes')">
+                        <option value="no" ${v.chosen?'':'selected'}>No</option>
+                        <option value="yes" ${v.chosen?'selected':''}>Yes</option>
+                    </select>
+                </div>
+            </div>
+            <div class="vendor-row">
+                <div class="vendor-field" style="flex:1">
+                    <label>Notes / Link</label>
+                    <textarea onchange="updateVendor('${v.id}','notes',this.value)" placeholder="Website, portfolio, package details...">${esc(v.notes||'')}</textarea>
+                </div>
+            </div>
+            ${v.chosen ? '<span class="chosen-badge">Chosen</span>' : ''}
+        </div>`).join('');
+}
+
+// ─── Render Decisions ───
 function renderDecisions() {
     document.getElementById('decisionsList').innerHTML = decisions.map(d => `
         <div class="decision-card">
-            <div class="decision-check ${d.resolved?'resolved':''}"
-                onclick="toggleDecision('${d.id}')"></div>
-            <textarea class="decision-text" rows="1"
-                onchange="updateDecisionText('${d.id}',this.value)"
-                style="${d.resolved?'text-decoration:line-through;opacity:0.5':''}"
-            >${esc(d.text)}</textarea>
+            <div class="decision-check ${d.resolved?'resolved':''}" onclick="toggleDecision('${d.id}')"></div>
+            <textarea class="decision-text" rows="1" onchange="updateDecisionText('${d.id}',this.value)"
+                style="${d.resolved?'text-decoration:line-through;opacity:0.5':''}">${esc(d.text)}</textarea>
             <button class="decision-delete" onclick="deleteDecision('${d.id}')">&#10005;</button>
         </div>`).join('');
 }
@@ -651,39 +450,27 @@ function updateSummary() {
     document.getElementById('summaryOther').textContent = fmtMYR(o);
 }
 
-// ─── Actions ───
-function editStart(el) {
-    if (el.textContent === '0' || el.textContent === '-') el.textContent = '';
-}
+// ─── Budget Actions ───
+function editStart(el) { if (el.textContent==='0'||el.textContent==='-') el.textContent=''; }
 
 async function updateAmount(id, field, value) {
-    const num = parseFloat(value.replace(/[^0-9.-]/g,'')) || 0;
+    const num = parseFloat(value.replace(/[^0-9.-]/g,''))||0;
     const item = budgetItems.find(i=>i.id===id);
-    if (item) item[field] = num;
+    if (item) item[field]=num;
     renderBudget(); updateSummary();
-    try { await dbUpdate('wedding_budget', id, {[field]: num}); }
-    catch(e) { showToast('Save failed'); }
+    try { await dbUpdate('wedding_budget', id, {[field]:num}); } catch(e) { showToast('Save failed'); }
 }
-
 async function updateField(id, field, value) {
     const item = budgetItems.find(i=>i.id===id);
-    if (item) item[field] = value;
-    try { await dbUpdate('wedding_budget', id, {[field]: value}); }
-    catch(e) { showToast('Save failed'); }
+    if (item) item[field]=value;
+    try { await dbUpdate('wedding_budget', id, {[field]:value}); } catch(e) { showToast('Save failed'); }
 }
-
 async function addRow() {
     try {
-        const [row] = await dbInsert('wedding_budget', [{
-            venue: 'estate', category: 'New Item',
-            parth_amount: 0, emily_amount: 0, other_amount: 0,
-            notes: '', sort_order: budgetItems.length
-        }]);
-        budgetItems.push(row);
-        renderBudget(); updateSummary();
+        const [row] = await dbInsert('wedding_budget', [{ venue:'estate', category:'New Item', parth_amount:0, emily_amount:0, other_amount:0, notes:'', sort_order:budgetItems.length }]);
+        budgetItems.push(row); renderBudget(); updateSummary();
     } catch(e) { showToast('Could not add row'); }
 }
-
 async function deleteRow(id) {
     if (!confirm('Delete this item?')) return;
     budgetItems = budgetItems.filter(i=>i.id!==id);
@@ -691,28 +478,44 @@ async function deleteRow(id) {
     try { await dbDelete('wedding_budget', id); } catch(e) {}
 }
 
-async function addDecision() {
+// ─── Vendor Actions ───
+async function addVendor() {
     try {
-        const [dec] = await dbInsert('wedding_decisions', [{ text: 'New decision...', resolved: false }]);
-        decisions.push(dec);
-        renderDecisions();
-    } catch(e) { showToast('Could not add'); }
+        const [v] = await dbInsert('wedding_vendors', [{ category: activeTab, name:'', price:null, contact:'', notes:'', chosen:false }]);
+        vendors.push(v); renderVendors();
+    } catch(e) { showToast('Could not add vendor \u2014 run SQL setup first'); }
+}
+async function updateVendor(id, field, value) {
+    const v = vendors.find(x=>x.id===id);
+    if (v) v[field] = value;
+    if (field === 'price') value = parseFloat(value)||null;
+    renderVendors();
+    try { await dbUpdate('wedding_vendors', id, {[field]:value}); } catch(e) { showToast('Save failed'); }
+}
+async function deleteVendor(id) {
+    vendors = vendors.filter(x=>x.id!==id);
+    renderVendors();
+    try { await dbDelete('wedding_vendors', id); } catch(e) {}
 }
 
+// ─── Decision Actions ───
+async function addDecision() {
+    try {
+        const [dec] = await dbInsert('wedding_decisions', [{ text:'New decision...', resolved:false }]);
+        decisions.push(dec); renderDecisions();
+    } catch(e) { showToast('Could not add'); }
+}
 async function toggleDecision(id) {
     const d = decisions.find(x=>x.id===id);
     if (!d) return;
-    d.resolved = !d.resolved;
-    renderDecisions();
-    try { await dbUpdate('wedding_decisions', id, { resolved: d.resolved }); } catch(e) {}
+    d.resolved = !d.resolved; renderDecisions();
+    try { await dbUpdate('wedding_decisions', id, {resolved:d.resolved}); } catch(e) {}
 }
-
 async function updateDecisionText(id, text) {
     const d = decisions.find(x=>x.id===id);
     if (d) d.text = text;
-    try { await dbUpdate('wedding_decisions', id, { text }); } catch(e) {}
+    try { await dbUpdate('wedding_decisions', id, {text}); } catch(e) {}
 }
-
 async function deleteDecision(id) {
     decisions = decisions.filter(x=>x.id!==id);
     renderDecisions();
@@ -723,11 +526,7 @@ async function deleteDecision(id) {
 function fmtMYR(n) { return new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR',minimumFractionDigits:0,maximumFractionDigits:0}).format(n); }
 function fmtNum(n) { return n===0 ? '-' : n.toLocaleString(); }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'), 2500);
-}
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 </script>
 </body>
 </html>

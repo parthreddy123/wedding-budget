@@ -558,7 +558,10 @@ function tryLogin() {
         localStorage.setItem('pe_budget_pw', pw);
         document.getElementById('loginOverlay').classList.add('hidden');
         document.getElementById('app').style.display = 'block';
-        init();
+        init().catch(err => {
+            console.error('Init error:', err);
+            fallbackToLocal();
+        });
     } else {
         document.getElementById('loginError').style.display = 'block';
     }
@@ -572,13 +575,40 @@ function checkPassword(pw) {
 if (localStorage.getItem('pe_budget_pw') && checkPassword(localStorage.getItem('pe_budget_pw'))) {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
-    setTimeout(init, 100);
+    setTimeout(() => init().catch(err => { console.error(err); fallbackToLocal(); }), 100);
 }
 
 // ─── Init ───
 async function init() {
-    await loadData();
-    if (sb) subscribeToChanges();
+    // Set a timeout — if Supabase is slow/broken, fall back to local after 4s
+    const timeout = setTimeout(() => {
+        if (budgetItems.length === 0) {
+            console.warn('Supabase timeout, falling back to local');
+            fallbackToLocal();
+        }
+    }, 4000);
+
+    try {
+        await loadData();
+        clearTimeout(timeout);
+        if (sb) subscribeToChanges();
+    } catch(err) {
+        clearTimeout(timeout);
+        console.error('Init error:', err);
+        fallbackToLocal();
+    }
+}
+
+function fallbackToLocal() {
+    sb = null;
+    budgetItems = getSeedData();
+    decisions = getSeedDecisions();
+    renderBudget();
+    renderDecisions();
+    updateSummary();
+    document.getElementById('syncDot').classList.add('offline');
+    document.getElementById('syncText').textContent = 'Local mode';
+    showToast('Using local data');
 }
 
 async function loadData() {

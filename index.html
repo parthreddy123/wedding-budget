@@ -62,23 +62,62 @@
         }
         .section-title .venue-total { font-size: 0.9rem; color: #888; display: block; margin-top: 0.2rem; font-family: -apple-system, sans-serif; }
 
-        table { width: 100%; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        thead th { background: var(--charcoal); color: var(--white); padding: 0.75rem 0.6rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; text-align: right; }
-        thead th:first-child { text-align: left; }
-        thead th:last-child { text-align: left; }
-        tbody td { padding: 0.6rem; border-bottom: 1px solid var(--light-gray); font-size: 0.9rem; text-align: right; vertical-align: middle; }
-        tbody td:first-child { text-align: left; font-weight: 500; color: var(--charcoal); }
-        tbody td:last-child { text-align: left; }
-        tbody tr:hover { background: #fdfcfa; }
-        tbody tr.total-row { background: var(--light-gray); font-weight: 700; }
-        tbody tr.total-row td { border-bottom: none; }
+        /* ─── Budget Bar Cards ─── */
+        .budget-card {
+            background: var(--white); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.5rem;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05); font-family: -apple-system, sans-serif;
+            position: relative; overflow: hidden; transition: box-shadow 0.2s;
+        }
+        .budget-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+        .bc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+        .bc-name { font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0.1rem 0.3rem; border-radius: 4px; }
+        .bc-name:hover { background: var(--gold-light); }
+        .bc-name:focus { outline: 2px solid var(--gold); background: var(--white); }
+        .bc-total { font-weight: 700; font-size: 1.05rem; color: var(--charcoal); }
+        .bc-bar-track {
+            width: 100%; height: 24px; background: var(--light-gray); border-radius: 12px;
+            overflow: hidden; display: flex; margin-bottom: 0.4rem;
+        }
+        .bc-bar-seg {
+            height: 100%; transition: width 0.4s ease; display: flex; align-items: center;
+            justify-content: center; font-size: 0.6rem; font-weight: 600; color: var(--white);
+            letter-spacing: 0.03em; overflow: hidden; white-space: nowrap;
+        }
+        .bc-bar-parth { background: var(--rose); }
+        .bc-bar-emily { background: var(--sage); }
+        .bc-bar-other { background: var(--gold); }
+        .bc-details { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; }
+        .bc-amount {
+            display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #666;
+        }
+        .bc-amount .bc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .bc-amount input {
+            width: 70px; border: 1px solid transparent; background: transparent; font-size: 0.8rem;
+            padding: 0.15rem 0.3rem; border-radius: 4px; font-family: -apple-system, sans-serif;
+            text-align: right; color: var(--charcoal);
+        }
+        .bc-amount input:hover { border-color: var(--mid-gray); }
+        .bc-amount input:focus { outline: 2px solid var(--gold); border-color: transparent; background: var(--white); }
+        .bc-notes {
+            flex: 1; min-width: 150px; border: none; background: transparent; font-size: 0.78rem;
+            color: #999; font-family: -apple-system, sans-serif; padding: 0.15rem 0.3rem; border-radius: 4px;
+        }
+        .bc-notes:hover { background: var(--light-gray); }
+        .bc-notes:focus { outline: 2px solid var(--gold); background: var(--white); color: var(--charcoal); }
+        .bc-delete {
+            position: absolute; top: 0.5rem; right: 0.5rem; opacity: 0; cursor: pointer;
+            color: var(--red); font-size: 0.75rem; border: none; background: none; transition: opacity 0.15s;
+        }
+        .budget-card:hover .bc-delete { opacity: 0.4; }
+        .bc-delete:hover { opacity: 1 !important; }
 
-        .editable { cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 4px; min-width: 60px; display: inline-block; transition: background 0.15s; }
-        .editable:hover { background: var(--gold-light); }
-        .editable:focus { outline: 2px solid var(--gold); background: var(--white); }
-
-        .notes-input { width: 100%; border: none; background: transparent; font-size: 0.8rem; color: #666; font-family: inherit; padding: 0.2rem; border-radius: 4px; }
-        .notes-input:focus { outline: 2px solid var(--gold); background: var(--white); }
+        /* Legend */
+        .bar-legend {
+            display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 1rem;
+            font-family: -apple-system, sans-serif; font-size: 0.75rem; color: #888;
+        }
+        .bar-legend span { display: flex; align-items: center; gap: 0.3rem; }
+        .bar-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
 
         .add-row-btn, .add-vendor-btn {
             display: block; margin: 0.8rem auto; padding: 0.5rem 1.5rem;
@@ -87,9 +126,24 @@
         }
         .add-row-btn:hover, .add-vendor-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        .delete-btn { opacity: 0; cursor: pointer; color: var(--red); font-size: 0.8rem; padding: 0.2rem 0.4rem; border: none; background: none; transition: opacity 0.15s; }
-        tbody tr:hover .delete-btn { opacity: 0.5; }
-        .delete-btn:hover { opacity: 1 !important; }
+        /* AI Insights */
+        .insights-box {
+            background: var(--white); border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1rem;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05); font-family: -apple-system, sans-serif;
+            border-left: 3px solid var(--gold);
+        }
+        .insights-box h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.5rem; font-weight: 600; }
+        .insights-content { font-size: 0.85rem; color: #555; line-height: 1.6; }
+        .insights-content ul { margin: 0.3rem 0; padding-left: 1.2rem; }
+        .insights-content li { margin-bottom: 0.3rem; }
+        .insights-btn {
+            display: block; margin: 0.8rem auto 0; padding: 0.4rem 1.2rem;
+            background: var(--gold); color: var(--white); border: none; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: -apple-system, sans-serif;
+        }
+        .insights-btn:hover { opacity: 0.85; }
+        .insights-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .insights-btn.loading { animation: pulse 1.5s infinite; }
 
         /* ─── Category Tabs ─── */
         .vendor-section { max-width: 900px; margin: 0 auto; padding: 0 1rem 2rem; }
@@ -246,13 +300,18 @@
 
     <div class="budget-section">
         <div class="section-title">Budget Overview <span class="venue-total" id="venueTotal"></span></div>
-        <table>
-            <thead><tr>
-                <th>Item</th><th>Parth</th><th>Emily</th><th>Other</th><th>Total</th><th>Notes</th><th></th>
-            </tr></thead>
-            <tbody id="budgetBody"></tbody>
-        </table>
+        <div class="bar-legend">
+            <span><div class="dot" style="background:var(--rose)"></div> Parth</span>
+            <span><div class="dot" style="background:var(--sage)"></div> Emily</span>
+            <span><div class="dot" style="background:var(--gold)"></div> Other / Family</span>
+        </div>
+        <div id="budgetCards"></div>
         <button class="add-row-btn" onclick="addRow()">+ Add Item</button>
+        <div class="insights-box">
+            <h4>AI Budget Insights</h4>
+            <div class="insights-content" id="insightsContent">Click below to get smart recommendations on your budget.</div>
+            <button class="insights-btn" id="insightsBtn" onclick="getInsights()">Get Recommendations</button>
+        </div>
     </div>
 
     <hr class="divider">
@@ -407,24 +466,40 @@ async function seedDecisions() {
 
 // ─── Render Budget ───
 function renderBudget() {
-    const tbody = document.getElementById('budgetBody');
-    let tP=0, tE=0, tO=0;
-    tbody.innerHTML = budgetItems.map(item => {
+    const container = document.getElementById('budgetCards');
+    let grandTotal = 0;
+    budgetItems.forEach(i => { grandTotal += (Number(i.parth_amount)||0) + (Number(i.emily_amount)||0) + (Number(i.other_amount)||0); });
+    const maxTotal = Math.max(grandTotal, 1);
+
+    container.innerHTML = budgetItems.map(item => {
         const p=Number(item.parth_amount)||0, e=Number(item.emily_amount)||0, o=Number(item.other_amount)||0, t=p+e+o;
-        tP+=p; tE+=e; tO+=o;
-        return `<tr>
-            <td><span class="editable" contenteditable="true" onblur="updateField(${item.id},'category',this.textContent)">${esc(item.category)}</span></td>
-            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'parth_amount',this.textContent)">${fmtNum(p)}</span></td>
-            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'emily_amount',this.textContent)">${fmtNum(e)}</span></td>
-            <td><span class="editable" contenteditable="true" onfocus="editStart(this)" onblur="updateAmount(${item.id},'other_amount',this.textContent)">${fmtNum(o)}</span></td>
-            <td><strong>${fmtMYR(t)}</strong></td>
-            <td><input class="notes-input" value="${esc(item.notes||'')}" onchange="updateField(${item.id},'notes',this.value)" placeholder="Add note..."></td>
-            <td><button class="delete-btn" onclick="deleteRow(${item.id})">&#10005;</button></td>
-        </tr>`;
+        const pPct = grandTotal ? (p/grandTotal*100) : 0;
+        const ePct = grandTotal ? (e/grandTotal*100) : 0;
+        const oPct = grandTotal ? (o/grandTotal*100) : 0;
+        const tPct = grandTotal ? (t/grandTotal*100) : 0;
+
+        return `<div class="budget-card">
+            <button class="bc-delete" onclick="deleteRow(${item.id})">&#10005;</button>
+            <div class="bc-top">
+                <span class="bc-name" contenteditable="true" onblur="updateField(${item.id},'category',this.textContent)">${esc(item.category)}</span>
+                <span class="bc-total">${fmtMYR(t)}</span>
+            </div>
+            <div class="bc-bar-track">
+                ${p > 0 ? `<div class="bc-bar-seg bc-bar-parth" style="width:${pPct}%">${pPct > 8 ? fmtMYR(p) : ''}</div>` : ''}
+                ${e > 0 ? `<div class="bc-bar-seg bc-bar-emily" style="width:${ePct}%">${ePct > 8 ? fmtMYR(e) : ''}</div>` : ''}
+                ${o > 0 ? `<div class="bc-bar-seg bc-bar-other" style="width:${oPct}%">${oPct > 8 ? fmtMYR(o) : ''}</div>` : ''}
+                ${t === 0 ? `<div style="width:100%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#bbb;font-family:-apple-system,sans-serif;">No budget set</div>` : ''}
+            </div>
+            <div class="bc-details">
+                <div class="bc-amount"><div class="bc-dot" style="background:var(--rose)"></div>P <input type="number" value="${p||''}" placeholder="0" onchange="updateAmount(${item.id},'parth_amount',this.value)"></div>
+                <div class="bc-amount"><div class="bc-dot" style="background:var(--sage)"></div>E <input type="number" value="${e||''}" placeholder="0" onchange="updateAmount(${item.id},'emily_amount',this.value)"></div>
+                <div class="bc-amount"><div class="bc-dot" style="background:var(--gold)"></div>Other <input type="number" value="${o||''}" placeholder="0" onchange="updateAmount(${item.id},'other_amount',this.value)"></div>
+                <input class="bc-notes" value="${esc(item.notes||'')}" onchange="updateField(${item.id},'notes',this.value)" placeholder="Add note...">
+            </div>
+        </div>`;
     }).join('');
-    const gt=tP+tE+tO;
-    tbody.innerHTML += `<tr class="total-row"><td>Total</td><td>${fmtMYR(tP)}</td><td>${fmtMYR(tE)}</td><td>${fmtMYR(tO)}</td><td><strong>${fmtMYR(gt)}</strong></td><td></td><td></td></tr>`;
-    document.getElementById('venueTotal').textContent = fmtMYR(gt);
+
+    document.getElementById('venueTotal').textContent = fmtMYR(grandTotal);
 }
 
 // ─── Render Category Tabs ───
@@ -503,10 +578,8 @@ function updateSummary() {
 }
 
 // ─── Budget Actions ───
-function editStart(el) { if (el.textContent==='0'||el.textContent==='-') el.textContent=''; }
-
 async function updateAmount(id, field, value) {
-    const num = parseFloat(value.replace(/[^0-9.-]/g,''))||0;
+    const num = parseFloat(value)||0;
     const item = budgetItems.find(i=>i.id===id);
     if (item) item[field]=num;
     renderBudget(); updateSummary();
@@ -709,6 +782,74 @@ async function deleteDecision(id) {
     decisions = decisions.filter(x=>x.id!==id);
     renderDecisions();
     try { await dbDelete('wedding_decisions', id); } catch(e) {}
+}
+
+// ─── AI Budget Insights ───
+async function getInsights() {
+    const btn = document.getElementById('insightsBtn');
+    const content = document.getElementById('insightsContent');
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.textContent = 'Analyzing...';
+    content.innerHTML = 'Reviewing your budget...';
+
+    const key = getClaudeKey();
+    const budgetSummary = budgetItems.map(i => {
+        const t = (Number(i.parth_amount)||0) + (Number(i.emily_amount)||0) + (Number(i.other_amount)||0);
+        return `${i.category}: MYR ${t.toLocaleString()} (Parth: ${i.parth_amount||0}, Emily: ${i.emily_amount||0}, Other: ${i.other_amount||0})${i.notes ? ' [Note: '+i.notes+']' : ''}`;
+    }).join('\n');
+    let gt = 0;
+    budgetItems.forEach(i => { gt += (Number(i.parth_amount)||0)+(Number(i.emily_amount)||0)+(Number(i.other_amount)||0); });
+
+    const savedVendors = vendors.filter(v=>v.chosen).map(v=>`${v.category}: ${v.name} (MYR ${v.price||'TBD'})`).join('\n') || 'None chosen yet';
+
+    const prompt = `You are a senior KL wedding planner advising a couple (Indian groom, Chinese bride) on their estate wedding budget in May 2026.
+
+Their current budget:
+${budgetSummary}
+
+Total: MYR ${gt.toLocaleString()}
+
+Chosen vendors:
+${savedVendors}
+
+Give 4-6 specific, actionable recommendations. Consider:
+- Are any categories suspiciously low or missing budget? (e.g. no budget for dancing/band but it's listed)
+- Cost-saving tips specific to KL wedding market
+- Where they should splurge vs save
+- Typical KL estate wedding costs for comparison
+- Any red flags or things commonly forgotten (e.g. tips, decoration, MC, emcee, wedding favours)
+- How the split between Parth/Emily/Other could be balanced
+
+Be direct, specific with MYR amounts, and reference KL market rates. Use bullet points. Keep it concise.
+
+Return HTML formatted content (use <ul><li> tags, <strong> for emphasis). No markdown.`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 1500,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+        if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error?.message || res.status);
+        const data = await res.json();
+        content.innerHTML = data.content[0].text;
+    } catch(err) {
+        content.innerHTML = `<span style="color:var(--red)">Could not get insights: ${esc(err.message)}</span>`;
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.textContent = 'Refresh Recommendations';
+    }
 }
 
 // ─── Helpers ───

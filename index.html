@@ -541,15 +541,33 @@ async function searchVendors() {
     searchResults = [];
     renderSearchResults();
 
-    const prompt = `You are a wedding planner assistant in Kuala Lumpur, Malaysia. Find 5-8 real, well-known vendors for the category "${activeTab}" for a wedding at an estate venue in KL.
+    const catDescriptors = {
+        'Dinner + Travel': 'Private dining restaurants, rehearsal dinner venues, and travel/transport services (luxury van hire, airport transfers for guests) for a multicultural wedding (Indian-Chinese). Include fine dining options in KL that can host 20-40 guests for intimate pre/post-wedding dinners, and luxury transport companies.',
+        'Photographer': 'Wedding photographers and videographers who specialize in multicultural weddings (Indian + Chinese ceremonies). Should be experienced with estate/garden venues, golden hour shoots, and both candid documentary style and traditional posed portraits. Include photo+video combo packages.',
+        'Makeup': 'Bridal makeup artists (MUA) in KL experienced with both Indian bridal looks (bold eyes, red lips, glam) and Chinese bridal makeup (dewy skin, elegant). Should be comfortable with multiple looks for different ceremonies in one day. Include trial session pricing.',
+        'Hairstylist': 'Bridal hairstylists in KL who can do multiple hairstyle changes across ceremonies — Indian bridal hair (braids, buns with flowers/accessories) and Chinese bridal styles (sleek updos, soft curls). Prefer those who travel to estate venues.',
+        'Dancing': 'First dance choreographers, Bollywood dance choreographers for sangeet/reception, and dance entertainment acts in KL. Include both couple first-dance coaching and group choreography for wedding party performances.',
+        'Live Band': 'Wedding live bands, acoustic duos, and musicians in KL. Include bands that can play a mix of English pop, Bollywood, and Chinese songs. Also include solo artists, string quartets for ceremony, and DJ+live band hybrid options for reception.',
+        'Additional Party': 'Event add-ons: photo booth companies (360 booths, mirror booths), dessert table stylists, wedding favours, fireworks/sparkler services, henna artists, tea ceremony set rentals, and any other party entertainment in KL (caricature artists, magicians).'
+    };
+
+    const descriptor = catDescriptors[activeTab] || `Wedding vendors for ${activeTab} in Kuala Lumpur.`;
+
+    const prompt = `You are a senior wedding planner in Kuala Lumpur, Malaysia. A couple (Indian groom, Chinese bride) is getting married at an estate venue in KL in May 2026.
+
+Search for 5-8 real, reputable vendors for: ${activeTab}
+
+Context for this category: ${descriptor}
 
 For each vendor provide:
-- name: the business name
+- name: the actual business name (must be a real KL-based vendor)
 - price_low: low end of price range in MYR (number only)
 - price_high: high end of price range in MYR (number only)
-- contact: Instagram handle, phone, or website if known
-- description: 1-2 sentences about what they offer, their style, why they're good
-- package: brief package details if applicable
+- contact: Instagram handle, phone number, or website
+- description: 1-2 sentences — what makes them good, their style, notable weddings
+- package: specific package details, what's included
+
+Prioritize vendors with strong Instagram presence, good Google reviews, and experience with multicultural weddings. Mix premium and mid-range options.
 
 Return ONLY a JSON array, no markdown, no explanation. Example:
 [{"name":"Studio ABC","price_low":3000,"price_high":6000,"contact":"@studioabc","description":"Premium wedding photography with cinematic style.","package":"8 hours, 2 photographers, 500 edited photos"}]`;

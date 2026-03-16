@@ -102,31 +102,6 @@
             color: var(--charcoal);
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            flex-wrap: wrap;
-            font-family: -apple-system, sans-serif;
-        }
-        .venue-tab {
-            padding: 0.5rem 1.2rem;
-            border: 2px solid var(--mid-gray);
-            border-radius: 25px;
-            background: var(--white);
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            color: var(--charcoal);
-        }
-        .venue-tab.active {
-            background: var(--charcoal);
-            color: var(--white);
-            border-color: var(--charcoal);
-        }
-        .venue-tab:hover:not(.active) { border-color: var(--gold); }
 
         .budget-section {
             max-width: 900px;
@@ -435,15 +410,9 @@
         </div>
     </div>
 
-    <div class="controls">
-        <button class="venue-tab active" data-venue="estate" onclick="switchVenue('estate')">Estate</button>
-        <button class="venue-tab" data-venue="majestic" onclick="switchVenue('majestic')">Majestic</button>
-        <button class="venue-tab" data-venue="glasshouse" onclick="switchVenue('glasshouse')">Glasshouse</button>
-    </div>
-
     <div class="budget-section">
         <div class="venue-title">
-            <span id="venueName">Estate</span>
+            Estate
             <span class="venue-total" id="venueTotal"></span>
         </div>
         <table>
@@ -514,7 +483,6 @@ async function dbDelete(table, id, idCol = 'id') {
 }
 
 // ─── State ───
-let currentVenue = 'estate';
 let budgetItems = [];
 let decisions = [];
 let pollTimer = null;
@@ -550,7 +518,7 @@ if (localStorage.getItem('pe_budget_pw') === 'pe2026') {
 // ─── Init ───
 async function init() {
     try {
-        let items = await dbSelect('wedding_budget', 'order=sort_order.asc');
+        let items = await dbSelect('wedding_budget', 'venue=eq.estate&order=sort_order.asc');
         if (items.length === 0) {
             items = await seedBudget();
         }
@@ -584,7 +552,7 @@ function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(async () => {
         try {
-            const items = await dbSelect('wedding_budget', 'order=sort_order.asc');
+            const items = await dbSelect('wedding_budget', 'venue=eq.estate&order=sort_order.asc');
             const decs = await dbSelect('wedding_decisions', 'order=created_at.asc');
             budgetItems = items;
             decisions = decs;
@@ -599,33 +567,16 @@ function startPolling() {
 
 // ─── Seed Data ───
 function makeSeedRows() {
-    const rows = [
-        { category: 'Main reception', parth: 0, emily: 0, other: 90000 },
-        { category: 'Indian wedding', parth: 0, emily: 0, other: 0 },
-        { category: 'Chinese wedding', parth: 0, emily: 0, other: 0 },
-        { category: 'Dinner + Travel', parth: 0, emily: 0, other: 4000 },
-        { category: 'Photographer/Videographer', parth: 0, emily: 0, other: 3000 },
-        { category: 'Clothing', parth: 4000, emily: 1500, other: 0 },
-        { category: 'Makeup, Hairstylist', parth: 0, emily: 1500, other: 0 },
-        { category: 'Planner', parth: 0, emily: 0, other: 0 },
+    return [
+        { venue: 'estate', category: 'Main reception', parth_amount: 0, emily_amount: 0, other_amount: 90000, notes: '', sort_order: 0 },
+        { venue: 'estate', category: 'Indian wedding', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 1 },
+        { venue: 'estate', category: 'Chinese wedding', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 2 },
+        { venue: 'estate', category: 'Dinner + Travel', parth_amount: 0, emily_amount: 0, other_amount: 4000, notes: '', sort_order: 3 },
+        { venue: 'estate', category: 'Photographer/Videographer', parth_amount: 0, emily_amount: 0, other_amount: 3000, notes: '', sort_order: 4 },
+        { venue: 'estate', category: 'Clothing', parth_amount: 4000, emily_amount: 1500, other_amount: 0, notes: '', sort_order: 5 },
+        { venue: 'estate', category: 'Makeup, Hairstylist', parth_amount: 0, emily_amount: 1500, other_amount: 0, notes: '', sort_order: 6 },
+        { venue: 'estate', category: 'Planner', parth_amount: 0, emily_amount: 0, other_amount: 0, notes: '', sort_order: 7 },
     ];
-    const overrides = {
-        majestic: { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 },
-        glasshouse: { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 }
-    };
-    const items = [];
-    for (const venue of ['estate', 'majestic', 'glasshouse']) {
-        rows.forEach((r, i) => {
-            const o = (overrides[venue] && overrides[venue][r.category] !== undefined)
-                ? overrides[venue][r.category] : r.other;
-            items.push({
-                venue, category: r.category,
-                parth_amount: r.parth, emily_amount: r.emily, other_amount: o,
-                notes: '', sort_order: i
-            });
-        });
-    }
-    return items;
 }
 
 async function seedBudget() {
@@ -643,7 +594,7 @@ async function seedDecisions() {
 // ─── Render ───
 function renderBudget() {
     const tbody = document.getElementById('budgetBody');
-    const items = budgetItems.filter(i => i.venue === currentVenue);
+    const items = budgetItems;
     let tP = 0, tE = 0, tO = 0;
 
     tbody.innerHTML = items.map(item => {
@@ -692,9 +643,8 @@ function renderDecisions() {
 }
 
 function updateSummary() {
-    const items = budgetItems.filter(i => i.venue === currentVenue);
     let p=0,e=0,o=0;
-    items.forEach(i => { p+=Number(i.parth_amount)||0; e+=Number(i.emily_amount)||0; o+=Number(i.other_amount)||0; });
+    budgetItems.forEach(i => { p+=Number(i.parth_amount)||0; e+=Number(i.emily_amount)||0; o+=Number(i.other_amount)||0; });
     document.getElementById('summaryTotal').textContent = fmtMYR(p+e+o);
     document.getElementById('summaryParth').textContent = fmtMYR(p);
     document.getElementById('summaryEmily').textContent = fmtMYR(e);
@@ -702,13 +652,6 @@ function updateSummary() {
 }
 
 // ─── Actions ───
-function switchVenue(v) {
-    currentVenue = v;
-    document.querySelectorAll('.venue-tab').forEach(t => t.classList.toggle('active', t.dataset.venue===v));
-    document.getElementById('venueName').textContent = v.charAt(0).toUpperCase()+v.slice(1);
-    renderBudget(); updateSummary();
-}
-
 function editStart(el) {
     if (el.textContent === '0' || el.textContent === '-') el.textContent = '';
 }
@@ -730,12 +673,11 @@ async function updateField(id, field, value) {
 }
 
 async function addRow() {
-    const items = budgetItems.filter(i=>i.venue===currentVenue);
     try {
         const [row] = await dbInsert('wedding_budget', [{
-            venue: currentVenue, category: 'New Item',
+            venue: 'estate', category: 'New Item',
             parth_amount: 0, emily_amount: 0, other_amount: 0,
-            notes: '', sort_order: items.length
+            notes: '', sort_order: budgetItems.length
         }]);
         budgetItems.push(row);
         renderBudget(); updateSummary();

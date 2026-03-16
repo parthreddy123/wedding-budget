@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P & E Wedding Budget</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --rose: #e8c4c4;
@@ -31,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, var(--rose) 0%, var(--sage) 100%);
             padding: 2rem 1rem;
@@ -81,7 +79,6 @@
         }
         .sync-dot.offline { background: var(--red); }
 
-        /* Summary Bar */
         .summary-bar {
             display: flex;
             justify-content: center;
@@ -92,9 +89,7 @@
             border-bottom: 1px solid var(--mid-gray);
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        .summary-item {
-            text-align: center;
-        }
+        .summary-item { text-align: center; }
         .summary-item .label {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -106,10 +101,7 @@
             font-weight: 700;
             color: var(--charcoal);
         }
-        .summary-item .value.over { color: var(--red); }
-        .summary-item .value.under { color: var(--green); }
 
-        /* Controls */
         .controls {
             display: flex;
             justify-content: center;
@@ -134,11 +126,8 @@
             color: var(--white);
             border-color: var(--charcoal);
         }
-        .venue-tab:hover:not(.active) {
-            border-color: var(--gold);
-        }
+        .venue-tab:hover:not(.active) { border-color: var(--gold); }
 
-        /* Budget Table */
         .budget-section {
             max-width: 900px;
             margin: 0 auto;
@@ -195,7 +184,6 @@
             color: var(--charcoal);
         }
         tbody td:last-child { text-align: left; }
-
         tbody tr:hover { background: #fdfcfa; }
         tbody tr.total-row {
             background: var(--light-gray);
@@ -203,7 +191,6 @@
         }
         tbody tr.total-row td { border-bottom: none; }
 
-        /* Editable cells */
         .editable {
             cursor: pointer;
             padding: 0.3rem 0.5rem;
@@ -216,10 +203,6 @@
         .editable:focus {
             outline: 2px solid var(--gold);
             background: var(--white);
-        }
-        .editable.editing {
-            background: var(--white);
-            outline: 2px solid var(--gold);
         }
 
         .notes-input {
@@ -237,7 +220,6 @@
             background: var(--white);
         }
 
-        /* Add row */
         .add-row-btn {
             display: block;
             margin: 0.8rem auto;
@@ -251,12 +233,8 @@
             transition: all 0.2s;
             font-family: -apple-system, sans-serif;
         }
-        .add-row-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
+        .add-row-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        /* Delete button */
         .delete-btn {
             opacity: 0;
             cursor: pointer;
@@ -270,7 +248,6 @@
         tbody tr:hover .delete-btn { opacity: 0.5; }
         .delete-btn:hover { opacity: 1 !important; }
 
-        /* Decisions panel */
         .decisions-panel {
             max-width: 900px;
             margin: 0 auto 2rem;
@@ -302,10 +279,7 @@
             margin-top: 2px;
             transition: all 0.2s;
         }
-        .decision-check.resolved {
-            background: var(--sage);
-            border-color: var(--sage);
-        }
+        .decision-check.resolved { background: var(--sage); border-color: var(--sage); }
         .decision-text {
             flex: 1;
             font-size: 0.9rem;
@@ -339,12 +313,8 @@
             color: #999;
             font-family: -apple-system, sans-serif;
         }
-        .add-decision-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
+        .add-decision-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 2rem 1rem;
@@ -353,7 +323,6 @@
             font-family: -apple-system, sans-serif;
         }
 
-        /* Notification toast */
         .toast {
             position: fixed;
             bottom: 1.5rem;
@@ -369,12 +338,8 @@
             transition: all 0.3s;
             z-index: 100;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateY(0); }
 
-        /* Login overlay */
         .login-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -394,16 +359,8 @@
             width: 90%;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
-        .login-box h2 {
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-        .login-box p {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
+        .login-box h2 { font-weight: 400; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .login-box p { color: #888; font-size: 0.9rem; margin-bottom: 1.5rem; }
         .login-box input {
             width: 100%;
             padding: 0.7rem 1rem;
@@ -413,10 +370,7 @@
             margin-bottom: 1rem;
             font-family: -apple-system, sans-serif;
         }
-        .login-box input:focus {
-            outline: 2px solid var(--gold);
-            border-color: transparent;
-        }
+        .login-box input:focus { outline: 2px solid var(--gold); border-color: transparent; }
         .login-box button {
             width: 100%;
             padding: 0.7rem;
@@ -429,14 +383,8 @@
             font-family: -apple-system, sans-serif;
         }
         .login-box button:hover { opacity: 0.9; }
-        .login-error {
-            color: var(--red);
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
+        .login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .header h1 { font-size: 1.6rem; }
             .summary-bar { gap: 0.8rem; }
@@ -448,7 +396,6 @@
 </head>
 <body>
 
-<!-- Login -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
         <h2>P & E</h2>
@@ -459,12 +406,11 @@
     </div>
 </div>
 
-<!-- Main App -->
 <div id="app" style="display:none;">
     <header class="header">
         <div class="sync-status">
             <span class="sync-dot" id="syncDot"></span>
-            <span id="syncText">Synced</span>
+            <span id="syncText">Connected</span>
         </div>
         <h1>PARTH & EMILY</h1>
         <div class="subtitle">Wedding Budget</div>
@@ -524,464 +470,321 @@
     </div>
 
     <div class="footer">
-        Changes sync in real-time between devices &middot; P&E 2026
+        Changes sync between devices &middot; P&E 2026
     </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Supabase ───
-const SUPABASE_URL = 'https://ddlfzwvnbawsnbeaultu.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_FVlxkuMjE7Mr98DVu9ktCg_o62Ml0Lt';
-let sb = null;
-try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) {
-    console.warn('Supabase init failed, using local mode:', e);
+// ─── Supabase REST API (no SDK needed) ───
+const API = 'https://ddlfzwvnbawsnbeaultu.supabase.co/rest/v1';
+const KEY = 'sb_publishable_FVlxkuMjE7Mr98DVu9ktCg_o62Ml0Lt';
+const HEADERS = {
+    'apikey': KEY,
+    'Authorization': 'Bearer ' + KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
+};
+
+async function dbSelect(table, query = '') {
+    const res = await fetch(`${API}/${table}?${query}`, { headers: HEADERS });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res.json();
+}
+async function dbInsert(table, rows) {
+    const res = await fetch(`${API}/${table}`, {
+        method: 'POST', headers: HEADERS, body: JSON.stringify(rows)
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res.json();
+}
+async function dbUpdate(table, id, data, idCol = 'id') {
+    const res = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {
+        method: 'PATCH', headers: HEADERS, body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res.json();
+}
+async function dbDelete(table, id, idCol = 'id') {
+    const res = await fetch(`${API}/${table}?${idCol}=eq.${id}`, {
+        method: 'DELETE', headers: HEADERS
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 }
 
 // ─── State ───
 let currentVenue = 'estate';
 let budgetItems = [];
 let decisions = [];
-let useLocal = !sb;
+let pollTimer = null;
 
 // ─── Login ───
 document.getElementById('passwordInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') tryLogin();
 });
 
+function checkPassword(pw) { return pw === 'pe2026'; }
+
 function tryLogin() {
     const pw = document.getElementById('passwordInput').value;
     if (checkPassword(pw)) {
         localStorage.setItem('pe_budget_pw', pw);
-        document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('app').style.display = 'block';
-        init().catch(err => {
-            console.error('Init error:', err);
-            fallbackToLocal();
-        });
+        showApp();
     } else {
         document.getElementById('loginError').style.display = 'block';
     }
 }
 
-function checkPassword(pw) {
-    return pw === 'pe2026';
-}
-
-// Auto-login if remembered
-if (localStorage.getItem('pe_budget_pw') && checkPassword(localStorage.getItem('pe_budget_pw'))) {
+function showApp() {
     document.getElementById('loginOverlay').classList.add('hidden');
     document.getElementById('app').style.display = 'block';
-    setTimeout(() => init().catch(err => { console.error(err); fallbackToLocal(); }), 100);
+    init();
+}
+
+// Auto-login
+if (localStorage.getItem('pe_budget_pw') === 'pe2026') {
+    showApp();
 }
 
 // ─── Init ───
 async function init() {
-    // Set a timeout — if Supabase is slow/broken, fall back to local after 4s
-    const timeout = setTimeout(() => {
-        if (budgetItems.length === 0) {
-            console.warn('Supabase timeout, falling back to local');
-            fallbackToLocal();
-        }
-    }, 4000);
-
     try {
-        await loadData();
-        clearTimeout(timeout);
-        if (sb) subscribeToChanges();
-    } catch(err) {
-        clearTimeout(timeout);
-        console.error('Init error:', err);
-        fallbackToLocal();
-    }
-}
-
-function fallbackToLocal() {
-    sb = null;
-    budgetItems = getSeedData();
-    decisions = getSeedDecisions();
-    renderBudget();
-    renderDecisions();
-    updateSummary();
-    document.getElementById('syncDot').classList.add('offline');
-    document.getElementById('syncText').textContent = 'Local mode';
-    showToast('Using local data');
-}
-
-async function loadData() {
-    // Load budget items
-    if (!sb) {
-        budgetItems = getSeedData();
-        decisions = getSeedDecisions();
-        renderBudget(); renderDecisions(); updateSummary();
-        showToast('Local mode — Supabase unavailable');
-        return;
-    }
-
-    const { data: items, error: itemsErr } = await sb
-        .from('wedding_budget')
-        .select('*')
-        .order('sort_order', { ascending: true });
-
-    if (itemsErr) {
-        console.error('Load error:', itemsErr);
-        budgetItems = getSeedData();
-        showToast('Using local data — check Supabase setup');
-    } else if (!items || items.length === 0) {
-        budgetItems = getSeedData();
-        await seedDatabase();
-    } else {
+        let items = await dbSelect('wedding_budget', 'order=sort_order.asc');
+        if (items.length === 0) {
+            items = await seedBudget();
+        }
         budgetItems = items;
-    }
 
-    // Load decisions
-    const { data: decs, error: decsErr } = await sb
-        .from('wedding_decisions')
-        .select('*')
-        .order('created_at', { ascending: true });
-
-    if (decsErr) {
-        decisions = getSeedDecisions();
-    } else if (!decs || decs.length === 0) {
-        decisions = getSeedDecisions();
-        await seedDecisions();
-    } else {
+        let decs = await dbSelect('wedding_decisions', 'order=created_at.asc');
+        if (decs.length === 0) {
+            decs = await seedDecisions();
+        }
         decisions = decs;
-    }
 
-    renderBudget();
-    renderDecisions();
-    updateSummary();
+        document.getElementById('syncDot').classList.remove('offline');
+        document.getElementById('syncText').textContent = 'Synced';
+
+        renderBudget();
+        renderDecisions();
+        updateSummary();
+
+        // Poll for changes every 5 seconds
+        startPolling();
+
+    } catch (err) {
+        console.error('Init failed:', err);
+        document.getElementById('syncDot').classList.add('offline');
+        document.getElementById('syncText').textContent = 'Offline';
+        showToast('Connection error — check console');
+    }
 }
 
-function getSeedData() {
-    const venues = ['estate', 'majestic', 'glasshouse'];
-    const rows = [
-        { category: 'Main reception', parth: 0, emily: 0, other: 90000, notes: '' },
-        { category: 'Indian wedding', parth: 0, emily: 0, other: 0, notes: '' },
-        { category: 'Chinese wedding', parth: 0, emily: 0, other: 0, notes: '' },
-        { category: 'Dinner + Travel', parth: 0, emily: 0, other: 4000, notes: '' },
-        { category: 'Photographer/Videographer', parth: 0, emily: 0, other: 3000, notes: '' },
-        { category: 'Clothing', parth: 4000, emily: 1500, other: 0, notes: '' },
-        { category: 'Makeup, Hairstylist', parth: 0, emily: 1500, other: 0, notes: '' },
-        { category: 'Planner', parth: 0, emily: 0, other: 0, notes: '' },
-    ];
-    const majesticOverrides = { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 };
-    const glassOverrides = { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 };
+function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(async () => {
+        try {
+            const items = await dbSelect('wedding_budget', 'order=sort_order.asc');
+            const decs = await dbSelect('wedding_decisions', 'order=created_at.asc');
+            budgetItems = items;
+            decisions = decs;
+            renderBudget();
+            renderDecisions();
+            updateSummary();
+        } catch (e) {
+            // silent — will retry next interval
+        }
+    }, 5000);
+}
 
+// ─── Seed Data ───
+function makeSeedRows() {
+    const rows = [
+        { category: 'Main reception', parth: 0, emily: 0, other: 90000 },
+        { category: 'Indian wedding', parth: 0, emily: 0, other: 0 },
+        { category: 'Chinese wedding', parth: 0, emily: 0, other: 0 },
+        { category: 'Dinner + Travel', parth: 0, emily: 0, other: 4000 },
+        { category: 'Photographer/Videographer', parth: 0, emily: 0, other: 3000 },
+        { category: 'Clothing', parth: 4000, emily: 1500, other: 0 },
+        { category: 'Makeup, Hairstylist', parth: 0, emily: 1500, other: 0 },
+        { category: 'Planner', parth: 0, emily: 0, other: 0 },
+    ];
+    const overrides = {
+        majestic: { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 },
+        glasshouse: { 'Main reception': 65000, 'Indian wedding': 4500, 'Chinese wedding': 2000 }
+    };
     const items = [];
-    let id = 1;
-    for (const venue of venues) {
+    for (const venue of ['estate', 'majestic', 'glasshouse']) {
         rows.forEach((r, i) => {
-            let other = r.other;
-            if (venue === 'majestic' && majesticOverrides[r.category] !== undefined) other = majesticOverrides[r.category];
-            if (venue === 'glasshouse' && glassOverrides[r.category] !== undefined) other = glassOverrides[r.category];
+            const o = (overrides[venue] && overrides[venue][r.category] !== undefined)
+                ? overrides[venue][r.category] : r.other;
             items.push({
-                id: id++,
-                venue,
-                category: r.category,
-                parth_amount: r.parth,
-                emily_amount: r.emily,
-                other_amount: other,
-                notes: r.notes,
-                sort_order: i
+                venue, category: r.category,
+                parth_amount: r.parth, emily_amount: r.emily, other_amount: o,
+                notes: '', sort_order: i
             });
         });
     }
     return items;
 }
 
-function getSeedDecisions() {
-    return [
-        { id: crypto.randomUUID(), text: 'Estate — theatre seating or not?', resolved: false },
-        { id: crypto.randomUUID(), text: 'Indian ceremony — do this in May or not, or in India? If so, when?', resolved: false },
-        { id: crypto.randomUUID(), text: 'Can we move tea ceremony to reception same day on 9 May?', resolved: false },
-    ];
-}
-
-async function seedDatabase() {
-    const rows = budgetItems.map(({ id, ...rest }) => rest);
-    const { error } = await sb.from('wedding_budget').insert(rows);
-    if (error) console.error('Seed error:', error);
-    else {
-        const { data } = await sb.from('wedding_budget').select('*').order('sort_order');
-        if (data) budgetItems = data;
-    }
+async function seedBudget() {
+    return await dbInsert('wedding_budget', makeSeedRows());
 }
 
 async function seedDecisions() {
-    const { error } = await sb.from('wedding_decisions').insert(
-        decisions.map(d => ({ text: d.text, resolved: d.resolved }))
-    );
-    if (error) console.error('Seed decisions error:', error);
-    else {
-        const { data } = await sb.from('wedding_decisions').select('*').order('created_at');
-        if (data) decisions = data;
-    }
+    return await dbInsert('wedding_decisions', [
+        { text: 'Estate \u2014 theatre seating or not?', resolved: false },
+        { text: 'Indian ceremony \u2014 do this in May or not, or in India? If so, when?', resolved: false },
+        { text: 'Can we move tea ceremony to reception same day on 9 May?', resolved: false },
+    ]);
 }
 
-// ─── Real-time ───
-function subscribeToChanges() {
-    sb.channel('budget-changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'wedding_budget' }, payload => {
-            handleBudgetChange(payload);
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'wedding_decisions' }, payload => {
-            handleDecisionChange(payload);
-        })
-        .subscribe((status) => {
-            const dot = document.getElementById('syncDot');
-            const text = document.getElementById('syncText');
-            if (status === 'SUBSCRIBED') {
-                dot.classList.remove('offline');
-                text.textContent = 'Live';
-            } else {
-                dot.classList.add('offline');
-                text.textContent = 'Reconnecting...';
-            }
-        });
-}
-
-function handleBudgetChange(payload) {
-    if (payload.eventType === 'INSERT') {
-        budgetItems.push(payload.new);
-    } else if (payload.eventType === 'UPDATE') {
-        const idx = budgetItems.findIndex(i => i.id === payload.new.id);
-        if (idx !== -1) budgetItems[idx] = payload.new;
-    } else if (payload.eventType === 'DELETE') {
-        budgetItems = budgetItems.filter(i => i.id !== payload.old.id);
-    }
-    renderBudget();
-    updateSummary();
-    showToast('Budget updated');
-}
-
-function handleDecisionChange(payload) {
-    if (payload.eventType === 'INSERT') {
-        decisions.push(payload.new);
-    } else if (payload.eventType === 'UPDATE') {
-        const idx = decisions.findIndex(d => d.id === payload.new.id);
-        if (idx !== -1) decisions[idx] = payload.new;
-    } else if (payload.eventType === 'DELETE') {
-        decisions = decisions.filter(d => d.id !== payload.old.id);
-    }
-    renderDecisions();
-}
-
-// ─── Render Budget ───
+// ─── Render ───
 function renderBudget() {
     const tbody = document.getElementById('budgetBody');
     const items = budgetItems.filter(i => i.venue === currentVenue);
-
-    let totalParth = 0, totalEmily = 0, totalOther = 0;
+    let tP = 0, tE = 0, tO = 0;
 
     tbody.innerHTML = items.map(item => {
-        const parth = item.parth_amount || 0;
-        const emily = item.emily_amount || 0;
-        const other = item.other_amount || 0;
-        const total = parth + emily + other;
-        totalParth += parth;
-        totalEmily += emily;
-        totalOther += other;
-
-        return `<tr data-id="${item.id}">
-            <td>
-                <span class="editable" contenteditable="true"
-                    onblur="updateField(${item.id}, 'category', this.textContent)">${item.category}</span>
-            </td>
-            <td>
-                <span class="editable" contenteditable="true"
-                    onblur="updateAmount(${item.id}, 'parth_amount', this.textContent)"
-                    onfocus="editStart(this)">${formatNum(parth)}</span>
-            </td>
-            <td>
-                <span class="editable" contenteditable="true"
-                    onblur="updateAmount(${item.id}, 'emily_amount', this.textContent)"
-                    onfocus="editStart(this)">${formatNum(emily)}</span>
-            </td>
-            <td>
-                <span class="editable" contenteditable="true"
-                    onblur="updateAmount(${item.id}, 'other_amount', this.textContent)"
-                    onfocus="editStart(this)">${formatNum(other)}</span>
-            </td>
-            <td><strong>${formatCurrency(total)}</strong></td>
-            <td>
-                <input class="notes-input" value="${escapeHtml(item.notes || '')}"
-                    onchange="updateField(${item.id}, 'notes', this.value)"
-                    placeholder="Add note...">
-            </td>
-            <td><button class="delete-btn" onclick="deleteRow(${item.id})">✕</button></td>
+        const p = Number(item.parth_amount) || 0;
+        const e = Number(item.emily_amount) || 0;
+        const o = Number(item.other_amount) || 0;
+        const t = p + e + o;
+        tP += p; tE += e; tO += o;
+        return `<tr>
+            <td><span class="editable" contenteditable="true"
+                onblur="updateField(${item.id},'category',this.textContent)">${esc(item.category)}</span></td>
+            <td><span class="editable" contenteditable="true"
+                onfocus="editStart(this)"
+                onblur="updateAmount(${item.id},'parth_amount',this.textContent)">${fmtNum(p)}</span></td>
+            <td><span class="editable" contenteditable="true"
+                onfocus="editStart(this)"
+                onblur="updateAmount(${item.id},'emily_amount',this.textContent)">${fmtNum(e)}</span></td>
+            <td><span class="editable" contenteditable="true"
+                onfocus="editStart(this)"
+                onblur="updateAmount(${item.id},'other_amount',this.textContent)">${fmtNum(o)}</span></td>
+            <td><strong>${fmtMYR(t)}</strong></td>
+            <td><input class="notes-input" value="${esc(item.notes||'')}"
+                onchange="updateField(${item.id},'notes',this.value)" placeholder="Add note..."></td>
+            <td><button class="delete-btn" onclick="deleteRow(${item.id})">&#10005;</button></td>
         </tr>`;
     }).join('');
 
-    // Total row
-    const grandTotal = totalParth + totalEmily + totalOther;
+    const gt = tP + tE + tO;
     tbody.innerHTML += `<tr class="total-row">
-        <td>Total</td>
-        <td>${formatCurrency(totalParth)}</td>
-        <td>${formatCurrency(totalEmily)}</td>
-        <td>${formatCurrency(totalOther)}</td>
-        <td><strong>${formatCurrency(grandTotal)}</strong></td>
-        <td></td>
-        <td></td>
-    </tr>`;
-
-    document.getElementById('venueTotal').textContent = formatCurrency(grandTotal);
+        <td>Total</td><td>${fmtMYR(tP)}</td><td>${fmtMYR(tE)}</td><td>${fmtMYR(tO)}</td>
+        <td><strong>${fmtMYR(gt)}</strong></td><td></td><td></td></tr>`;
+    document.getElementById('venueTotal').textContent = fmtMYR(gt);
 }
 
-// ─── Render Decisions ───
 function renderDecisions() {
-    const container = document.getElementById('decisionsList');
-    container.innerHTML = decisions.map(d => `
-        <div class="decision-card" data-id="${d.id}">
-            <div class="decision-check ${d.resolved ? 'resolved' : ''}"
+    document.getElementById('decisionsList').innerHTML = decisions.map(d => `
+        <div class="decision-card">
+            <div class="decision-check ${d.resolved?'resolved':''}"
                 onclick="toggleDecision('${d.id}')"></div>
             <textarea class="decision-text" rows="1"
-                onchange="updateDecisionText('${d.id}', this.value)"
-                style="${d.resolved ? 'text-decoration:line-through;opacity:0.5' : ''}"
-            >${escapeHtml(d.text)}</textarea>
-            <button class="decision-delete" onclick="deleteDecision('${d.id}')">✕</button>
-        </div>
-    `).join('');
+                onchange="updateDecisionText('${d.id}',this.value)"
+                style="${d.resolved?'text-decoration:line-through;opacity:0.5':''}"
+            >${esc(d.text)}</textarea>
+            <button class="decision-delete" onclick="deleteDecision('${d.id}')">&#10005;</button>
+        </div>`).join('');
 }
 
-// ─── Summary ───
 function updateSummary() {
     const items = budgetItems.filter(i => i.venue === currentVenue);
-    let parth = 0, emily = 0, other = 0;
-    items.forEach(i => {
-        parth += i.parth_amount || 0;
-        emily += i.emily_amount || 0;
-        other += i.other_amount || 0;
-    });
-    const total = parth + emily + other;
-    document.getElementById('summaryTotal').textContent = formatCurrency(total);
-    document.getElementById('summaryParth').textContent = formatCurrency(parth);
-    document.getElementById('summaryEmily').textContent = formatCurrency(emily);
-    document.getElementById('summaryOther').textContent = formatCurrency(other);
+    let p=0,e=0,o=0;
+    items.forEach(i => { p+=Number(i.parth_amount)||0; e+=Number(i.emily_amount)||0; o+=Number(i.other_amount)||0; });
+    document.getElementById('summaryTotal').textContent = fmtMYR(p+e+o);
+    document.getElementById('summaryParth').textContent = fmtMYR(p);
+    document.getElementById('summaryEmily').textContent = fmtMYR(e);
+    document.getElementById('summaryOther').textContent = fmtMYR(o);
 }
 
 // ─── Actions ───
-function switchVenue(venue) {
-    currentVenue = venue;
-    document.querySelectorAll('.venue-tab').forEach(t => t.classList.toggle('active', t.dataset.venue === venue));
-    document.getElementById('venueName').textContent = venue.charAt(0).toUpperCase() + venue.slice(1);
-    renderBudget();
-    updateSummary();
+function switchVenue(v) {
+    currentVenue = v;
+    document.querySelectorAll('.venue-tab').forEach(t => t.classList.toggle('active', t.dataset.venue===v));
+    document.getElementById('venueName').textContent = v.charAt(0).toUpperCase()+v.slice(1);
+    renderBudget(); updateSummary();
 }
 
 function editStart(el) {
-    const text = el.textContent;
-    if (text === '0' || text === '-') el.textContent = '';
-    el.classList.add('editing');
+    if (el.textContent === '0' || el.textContent === '-') el.textContent = '';
 }
 
 async function updateAmount(id, field, value) {
-    const num = parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
-    const item = budgetItems.find(i => i.id === id);
+    const num = parseFloat(value.replace(/[^0-9.-]/g,'')) || 0;
+    const item = budgetItems.find(i=>i.id===id);
     if (item) item[field] = num;
-    renderBudget();
-    updateSummary();
-
-    if (sb) {
-        const { error } = await sb.from('wedding_budget').update({ [field]: num }).eq('id', id);
-        if (error) showToast('Save failed — check connection');
-    }
+    renderBudget(); updateSummary();
+    try { await dbUpdate('wedding_budget', id, {[field]: num}); }
+    catch(e) { showToast('Save failed'); }
 }
 
 async function updateField(id, field, value) {
-    const item = budgetItems.find(i => i.id === id);
+    const item = budgetItems.find(i=>i.id===id);
     if (item) item[field] = value;
-
-    if (sb) {
-        const { error } = await sb.from('wedding_budget').update({ [field]: value }).eq('id', id);
-        if (error) showToast('Save failed');
-    }
+    try { await dbUpdate('wedding_budget', id, {[field]: value}); }
+    catch(e) { showToast('Save failed'); }
 }
 
 async function addRow() {
-    const items = budgetItems.filter(i => i.venue === currentVenue);
-    const newItem = {
-        venue: currentVenue,
-        category: 'New Item',
-        parth_amount: 0,
-        emily_amount: 0,
-        other_amount: 0,
-        notes: '',
-        sort_order: items.length
-    };
-
-    if (sb) {
-        const { data, error } = await sb.from('wedding_budget').insert(newItem).select();
-        if (error) { showToast('Could not add row'); return; }
-        if (data) budgetItems.push(data[0]);
-    } else {
-        newItem.id = Date.now();
-        budgetItems.push(newItem);
-    }
-    renderBudget();
-    updateSummary();
+    const items = budgetItems.filter(i=>i.venue===currentVenue);
+    try {
+        const [row] = await dbInsert('wedding_budget', [{
+            venue: currentVenue, category: 'New Item',
+            parth_amount: 0, emily_amount: 0, other_amount: 0,
+            notes: '', sort_order: items.length
+        }]);
+        budgetItems.push(row);
+        renderBudget(); updateSummary();
+    } catch(e) { showToast('Could not add row'); }
 }
 
 async function deleteRow(id) {
     if (!confirm('Delete this item?')) return;
-    budgetItems = budgetItems.filter(i => i.id !== id);
-    renderBudget();
-    updateSummary();
-    if (sb) await sb.from('wedding_budget').delete().eq('id', id);
+    budgetItems = budgetItems.filter(i=>i.id!==id);
+    renderBudget(); updateSummary();
+    try { await dbDelete('wedding_budget', id); } catch(e) {}
 }
 
 async function addDecision() {
-    const newDec = { text: 'New decision...', resolved: false };
-    if (sb) {
-        const { data, error } = await sb.from('wedding_decisions').insert(newDec).select();
-        if (error) { showToast('Could not add decision'); return; }
-        if (data) decisions.push(data[0]);
-    } else {
-        newDec.id = crypto.randomUUID();
-        decisions.push(newDec);
-    }
-    renderDecisions();
+    try {
+        const [dec] = await dbInsert('wedding_decisions', [{ text: 'New decision...', resolved: false }]);
+        decisions.push(dec);
+        renderDecisions();
+    } catch(e) { showToast('Could not add'); }
 }
 
 async function toggleDecision(id) {
-    const dec = decisions.find(d => d.id === id);
-    if (!dec) return;
-    dec.resolved = !dec.resolved;
+    const d = decisions.find(x=>x.id===id);
+    if (!d) return;
+    d.resolved = !d.resolved;
     renderDecisions();
-    if (sb) await sb.from('wedding_decisions').update({ resolved: dec.resolved }).eq('id', id);
+    try { await dbUpdate('wedding_decisions', id, { resolved: d.resolved }); } catch(e) {}
 }
 
 async function updateDecisionText(id, text) {
-    const dec = decisions.find(d => d.id === id);
-    if (dec) dec.text = text;
-    if (sb) await sb.from('wedding_decisions').update({ text }).eq('id', id);
+    const d = decisions.find(x=>x.id===id);
+    if (d) d.text = text;
+    try { await dbUpdate('wedding_decisions', id, { text }); } catch(e) {}
 }
 
 async function deleteDecision(id) {
-    decisions = decisions.filter(d => d.id !== id);
+    decisions = decisions.filter(x=>x.id!==id);
     renderDecisions();
-    if (sb) await sb.from('wedding_decisions').delete().eq('id', id);
+    try { await dbDelete('wedding_decisions', id); } catch(e) {}
 }
 
 // ─── Helpers ───
-function formatCurrency(n) {
-    return new Intl.NumberFormat('en-MY', { style: 'currency', currency: 'MYR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
-}
-function formatNum(n) {
-    return n === 0 ? '-' : n.toLocaleString();
-}
-function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function fmtMYR(n) { return new Intl.NumberFormat('en-MY',{style:'currency',currency:'MYR',minimumFractionDigits:0,maximumFractionDigits:0}).format(n); }
+function fmtNum(n) { return n===0 ? '-' : n.toLocaleString(); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
 }
 </script>
 </body>

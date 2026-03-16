@@ -160,6 +160,42 @@
         .login-box button:hover { opacity: 0.9; }
         .login-error { color: var(--red); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
 
+        /* Search */
+        .search-bar { text-align: center; margin-bottom: 1rem; }
+        .search-btn {
+            padding: 0.6rem 1.8rem; background: linear-gradient(135deg, var(--rose) 0%, var(--sage) 100%);
+            color: var(--white); border: none; border-radius: 25px; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; font-family: -apple-system, sans-serif; letter-spacing: 0.03em;
+            transition: opacity 0.2s, transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .search-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .search-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .search-btn.searching { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+        .search-status { display: block; margin-top: 0.4rem; font-size: 0.75rem; color: #999; font-family: -apple-system, sans-serif; }
+
+        .search-result {
+            background: var(--white); border: 2px solid var(--light-gray); border-radius: 10px;
+            padding: 1rem; margin-bottom: 0.5rem; font-family: -apple-system, sans-serif;
+            display: flex; align-items: flex-start; gap: 0.8rem; transition: border-color 0.2s;
+        }
+        .search-result:hover { border-color: var(--gold); }
+        .sr-info { flex: 1; }
+        .sr-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .sr-price { color: var(--sage); font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+        .sr-detail { font-size: 0.8rem; color: #777; line-height: 1.4; }
+        .sr-contact { font-size: 0.8rem; color: #555; margin-top: 0.2rem; }
+        .sr-save-btn {
+            padding: 0.4rem 1rem; background: var(--charcoal); color: var(--white); border: none;
+            border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;
+            font-family: -apple-system, sans-serif; align-self: center;
+        }
+        .sr-save-btn:hover { opacity: 0.85; }
+        .sr-save-btn.saved { background: var(--sage); cursor: default; }
+        #searchResults { margin-bottom: 1rem; }
+
+        .saved-label { font-size: 0.75rem; font-weight: 400; letter-spacing: 0.08em; color: #999; text-transform: uppercase; margin: 1rem 0 0.5rem; font-family: -apple-system, sans-serif; }
+
         .divider { max-width: 900px; margin: 0 auto; border: none; border-top: 1px solid var(--mid-gray); }
 
         @media (max-width: 600px) {
@@ -217,8 +253,13 @@
     <div class="vendor-section">
         <h2>Vendor Research</h2>
         <div class="cat-tabs" id="catTabs"></div>
+        <div class="search-bar">
+            <button class="search-btn" id="searchBtn" onclick="searchVendors()">Search KL Vendors</button>
+            <span class="search-status" id="searchStatus"></span>
+        </div>
+        <div id="searchResults"></div>
         <div id="vendorList"></div>
-        <button class="add-vendor-btn" onclick="addVendor()">+ Add Vendor</button>
+        <button class="add-vendor-btn" onclick="addVendor()">+ Add Manually</button>
     </div>
 
     <hr class="divider">
@@ -387,6 +428,9 @@ function renderCatTabs() {
 
 function switchTab(cat) {
     activeTab = cat;
+    searchResults = [];
+    document.getElementById('searchResults').innerHTML = '';
+    document.getElementById('searchStatus').textContent = '';
     renderCatTabs();
     renderVendors();
 }
@@ -395,8 +439,8 @@ function switchTab(cat) {
 function renderVendors() {
     const list = vendors.filter(v => v.category === activeTab);
     document.getElementById('vendorList').innerHTML = list.length === 0
-        ? `<div style="text-align:center;padding:1.5rem;color:#aaa;font-family:-apple-system,sans-serif;font-size:0.9rem;">No vendors added for ${activeTab} yet</div>`
-        : list.map(v => `
+        ? `<div style="text-align:center;padding:1.5rem;color:#aaa;font-family:-apple-system,sans-serif;font-size:0.9rem;">No vendors saved for ${activeTab} yet — hit Search above!</div>`
+        : '<div class="saved-label">Saved Vendors</div>' + list.map(v => `
         <div class="vendor-card ${v.chosen ? 'vendor-chosen' : ''}">
             <button class="vendor-delete" onclick="deleteVendor('${v.id}')">&#10005;</button>
             <div class="vendor-row">
@@ -476,6 +520,130 @@ async function deleteRow(id) {
     budgetItems = budgetItems.filter(i=>i.id!==id);
     renderBudget(); updateSummary();
     try { await dbDelete('wedding_budget', id); } catch(e) {}
+}
+
+// ─── Claude AI Search ───
+// Key stored in localStorage after first entry
+function getClaudeKey() {
+    return localStorage.getItem('pe_claude_key') || '';
+}
+function setClaudeKey(k) {
+    localStorage.setItem('pe_claude_key', k);
+}
+let searchResults = [];
+
+async function searchVendors() {
+    let key = getClaudeKey();
+    if (!key) {
+        key = prompt('Enter Anthropic API key (saved locally, only needed once):');
+        if (!key) return;
+        setClaudeKey(key);
+    }
+    const btn = document.getElementById('searchBtn');
+    const status = document.getElementById('searchStatus');
+    btn.disabled = true;
+    btn.classList.add('searching');
+    btn.textContent = 'Searching...';
+    status.textContent = 'Asking Claude AI for ' + activeTab + ' vendors in KL...';
+    searchResults = [];
+    renderSearchResults();
+
+    const prompt = `You are a wedding planner assistant in Kuala Lumpur, Malaysia. Find 5-8 real, well-known vendors for the category "${activeTab}" for a wedding at an estate venue in KL.
+
+For each vendor provide:
+- name: the business name
+- price_low: low end of price range in MYR (number only)
+- price_high: high end of price range in MYR (number only)
+- contact: Instagram handle, phone, or website if known
+- description: 1-2 sentences about what they offer, their style, why they're good
+- package: brief package details if applicable
+
+Return ONLY a JSON array, no markdown, no explanation. Example:
+[{"name":"Studio ABC","price_low":3000,"price_high":6000,"contact":"@studioabc","description":"Premium wedding photography with cinematic style.","package":"8 hours, 2 photographers, 500 edited photos"}]`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+                model: 'claude-haiku-4-5-20251001',
+                max_tokens: 2000,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error?.message || `API error ${res.status}`);
+        }
+
+        const data = await res.json();
+        const text = data.content[0].text.trim();
+        // Parse JSON from response (handle potential markdown wrapping)
+        const jsonStr = text.replace(/^```json?\n?/,'').replace(/\n?```$/,'');
+        searchResults = JSON.parse(jsonStr);
+
+        status.textContent = `Found ${searchResults.length} vendors for ${activeTab}`;
+        renderSearchResults();
+    } catch(err) {
+        console.error('Search error:', err);
+        status.textContent = 'Search failed: ' + err.message;
+        if (err.message.includes('credit') || err.message.includes('billing')) {
+            status.textContent = 'API needs credits \u2014 add billing at console.anthropic.com';
+        }
+        if (err.message.includes('auth') || err.message.includes('401') || err.message.includes('invalid')) {
+            localStorage.removeItem('pe_claude_key');
+            status.textContent = 'Invalid API key \u2014 click Search again to re-enter';
+        }
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('searching');
+        btn.textContent = 'Search KL Vendors';
+    }
+}
+
+function renderSearchResults() {
+    const container = document.getElementById('searchResults');
+    if (searchResults.length === 0) { container.innerHTML = ''; return; }
+
+    container.innerHTML = '<div class="saved-label">Search Results</div>' + searchResults.map((r, i) => {
+        const priceStr = r.price_low && r.price_high
+            ? `MYR ${r.price_low.toLocaleString()} — ${r.price_high.toLocaleString()}`
+            : r.price_low ? `From MYR ${r.price_low.toLocaleString()}` : 'Quote on request';
+        const saved = vendors.some(v => v.name === r.name && v.category === activeTab);
+        return `<div class="search-result">
+            <div class="sr-info">
+                <div class="sr-name">${esc(r.name)}</div>
+                <div class="sr-price">${priceStr}</div>
+                <div class="sr-detail">${esc(r.description||'')}</div>
+                ${r.package ? `<div class="sr-detail" style="margin-top:0.2rem"><strong>Package:</strong> ${esc(r.package)}</div>` : ''}
+                ${r.contact ? `<div class="sr-contact">Contact: ${esc(r.contact)}</div>` : ''}
+            </div>
+            <button class="sr-save-btn ${saved?'saved':''}" onclick="${saved ? '' : `saveSearchResult(${i})`}">${saved ? 'Saved' : 'Save'}</button>
+        </div>`;
+    }).join('');
+}
+
+async function saveSearchResult(idx) {
+    const r = searchResults[idx];
+    if (!r) return;
+    const avgPrice = (r.price_low && r.price_high) ? Math.round((r.price_low + r.price_high) / 2) : r.price_low || null;
+    const notes = [r.description, r.package ? 'Package: ' + r.package : ''].filter(Boolean).join('\n');
+    try {
+        const [v] = await dbInsert('wedding_vendors', [{
+            category: activeTab, name: r.name, price: avgPrice,
+            contact: r.contact || '', notes: notes, chosen: false
+        }]);
+        vendors.push(v);
+        renderSearchResults();
+        renderVendors();
+        showToast(`Saved ${r.name}`);
+    } catch(e) { showToast('Could not save — run vendor SQL setup first'); }
 }
 
 // ─── Vendor Actions ───
